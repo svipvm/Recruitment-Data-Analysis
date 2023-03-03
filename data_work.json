@@ -1,0 +1,136 @@
+{'status': 200, 'message': '操作成功', 'data': {'content': [
+            {'id': '1629824814967554048', 'publishTime': None, 'updateTime': '2023-02-26 20: 44', 'willNature': 2, 'positionName': '大数据分析师（BI）', 'minimumWage': 4500, 'maximumWage': 7000, 'payMethod': 1, 'exp': '不限', 'educationalRequirements': 3, 'count': 1, 'enterpriseAddress': {'id': '1629824814967554048', 'enterpriseId': '1629824703571034112', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440106', 'detailedAddress': '广州市天河区高普路1023号1楼101室自编23号', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1629824814971748352', 'createTime': '2023-02-26 20: 44: 51', 'creatorId': None, 'creatorName': None, 'updateTime': '2023-02-26 20: 44: 51', 'jobPositionId': '1629824814967554048', 'labelId': '1519614182750814208', 'labelName': '互联网', 'labelTypeId': '3', 'labelTypeName': None
+                    },
+                    {'id': '1629824814971748353', 'createTime': '2023-02-26 20: 44: 51', 'creatorId': None, 'creatorName': None, 'updateTime': '2023-02-26 20: 44: 51', 'jobPositionId': '1629824814967554048', 'labelId': '1519614182830505984', 'labelName': '软件', 'labelTypeId': '3', 'labelTypeName': None
+                    }
+                ], 'enterpriseExtInfo': {'id': '1629824706402189312', 'logo': '/co914401067783708547/1677417486494/1677417486494.png', 'shortName': '太普软件', 'industry': '[
+                        "互联网",
+                        "软件"
+                    ]', 'econKind': '民营公司', 'personScope': '50-100人'
+                }
+            },
+            {'id': '1613439889204969472', 'publishTime': '2023-01-12 15: 37', 'updateTime': '2023-01-12 15: 37', 'willNature': 0, 'positionName': '自然语言处理工程师', 'minimumWage': 2000, 'maximumWage': 4000, 'payMethod': 1, 'exp': '经验不限', 'educationalRequirements': 3, 'count': 0, 'enterpriseAddress': {'id': '1613428212652703744', 'enterpriseId': '1613428212640120832', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440113', 'detailedAddress': '\xa0广州大学城(大学城北)创智园3栋4楼', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1613439889204969472', 'createTime': '2023-01-12 15: 37: 00', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 37: 00', 'jobPositionId': '1613439889204969472', 'labelId': '1613439889179803648', 'labelName': '自然语言', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    }
+                ], 'enterpriseExtInfo': {'id': '1613428212656898048', 'logo': '/user0dq9u2/2ccfd59d-138c-1995-969d-3644c5911d80/2ccfd59d-138c-1995-969d-3644c5911d80.png', 'shortName': '奇之', 'industry': '[
+                        "互联网",
+                        "数据服务"
+                    ]', 'econKind': '民营公司', 'personScope': '50-100人'
+                }
+            },
+            {'id': '1613439536044572672', 'publishTime': '2023-01-12 15: 35', 'updateTime': '2023-01-12 15: 35', 'willNature': 0, 'positionName': '爬虫工程师', 'minimumWage': 2000, 'maximumWage': 4000, 'payMethod': 1, 'exp': '经验不限', 'educationalRequirements': 3, 'count': 0, 'enterpriseAddress': {'id': '1613428212652703744', 'enterpriseId': '1613428212640120832', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440113', 'detailedAddress': '\xa0广州大学城(大学城北)创智园3栋4楼', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1613439536044572672', 'createTime': '2023-01-12 15: 35: 36', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 35: 36', 'jobPositionId': '1613439536044572672', 'labelId': '1613439183358132224', 'labelName': 'Python', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    },
+                    {'id': '1613439536044572673', 'createTime': '2023-01-12 15: 35: 36', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 35: 36', 'jobPositionId': '1613439536044572672', 'labelId': '1613439536019406848', 'labelName': '爬虫框架', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    }
+                ], 'enterpriseExtInfo': {'id': '1613428212656898048', 'logo': '/user0dq9u2/2ccfd59d-138c-1995-969d-3644c5911d80/2ccfd59d-138c-1995-969d-3644c5911d80.png', 'shortName': '奇之', 'industry': '[
+                        "互联网",
+                        "数据服务"
+                    ]', 'econKind': '民营公司', 'personScope': '50-100人'
+                }
+            },
+            {'id': '1613439183576236032', 'publishTime': '2023-01-12 15: 34', 'updateTime': '2023-01-12 15: 34', 'willNature': 0, 'positionName': 'Python/django后台开发工程师', 'minimumWage': 2000, 'maximumWage': 4000, 'payMethod': 1, 'exp': '经验不限', 'educationalRequirements': 3, 'count': 0, 'enterpriseAddress': {'id': '1613428212652703744', 'enterpriseId': '1613428212640120832', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440113', 'detailedAddress': '\xa0广州大学城(大学城北)创智园3栋4楼', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1613439183580430336', 'createTime': '2023-01-12 15: 34: 12', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 34: 12', 'jobPositionId': '1613439183576236032', 'labelId': '1613439183358132224', 'labelName': 'Python', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    },
+                    {'id': '1613439183580430337', 'createTime': '2023-01-12 15: 34: 12', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 34: 12', 'jobPositionId': '1613439183576236032', 'labelId': '1613439183433629696', 'labelName': 'django', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    },
+                    {'id': '1613439183580430338', 'createTime': '2023-01-12 15: 34: 12', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 34: 12', 'jobPositionId': '1613439183576236032', 'labelId': '1613439183517515776', 'labelName': '后台开发', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    }
+                ], 'enterpriseExtInfo': {'id': '1613428212656898048', 'logo': '/user0dq9u2/2ccfd59d-138c-1995-969d-3644c5911d80/2ccfd59d-138c-1995-969d-3644c5911d80.png', 'shortName': '奇之', 'industry': '[
+                        "互联网",
+                        "数据服务"
+                    ]', 'econKind': '民营公司', 'personScope': '50-100人'
+                }
+            },
+            {'id': '1613434566444449792', 'publishTime': '2023-01-12 15: 15', 'updateTime': '2023-01-12 15: 15', 'willNature': 0, 'positionName': '团队运营管理实习生', 'minimumWage': 2000, 'maximumWage': 4000, 'payMethod': 1, 'exp': '经验不限', 'educationalRequirements': 3, 'count': 0, 'enterpriseAddress': {'id': '1613428212652703744', 'enterpriseId': '1613428212640120832', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440113', 'detailedAddress': '\xa0广州大学城(大学城北)创智园3栋4楼', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1613434566448644096', 'createTime': '2023-01-12 15: 15: 51', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 15: 51', 'jobPositionId': '1613434566444449792', 'labelId': '1613434566423478272', 'labelName': '运营', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    }
+                ], 'enterpriseExtInfo': {'id': '1613428212656898048', 'logo': '/user0dq9u2/2ccfd59d-138c-1995-969d-3644c5911d80/2ccfd59d-138c-1995-969d-3644c5911d80.png', 'shortName': '奇之', 'industry': '[
+                        "互联网",
+                        "数据服务"
+                    ]', 'econKind': '民营公司', 'personScope': '50-100人'
+                }
+            },
+            {'id': '1613433907498319872', 'publishTime': '2023-01-12 15: 13', 'updateTime': '2023-01-12 15: 13', 'willNature': 0, 'positionName': '技术文章撰写实习生', 'minimumWage': 2000, 'maximumWage': 4000, 'payMethod': 1, 'exp': '经验不限', 'educationalRequirements': 3, 'count': 0, 'enterpriseAddress': {'id': '1613428212652703744', 'enterpriseId': '1613428212640120832', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440113', 'detailedAddress': '\xa0广州大学城(大学城北)创智园3栋4楼', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1613433907498319872', 'createTime': '2023-01-12 15: 13: 14', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 13: 14', 'jobPositionId': '1613433907498319872', 'labelId': '1613433907477348352', 'labelName': '技术文章撰写', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    }
+                ], 'enterpriseExtInfo': {'id': '1613428212656898048', 'logo': '/user0dq9u2/2ccfd59d-138c-1995-969d-3644c5911d80/2ccfd59d-138c-1995-969d-3644c5911d80.png', 'shortName': '奇之', 'industry': '[
+                        "互联网",
+                        "数据服务"
+                    ]', 'econKind': '民营公司', 'personScope': '50-100人'
+                }
+            },
+            {'id': '1613431494808829952', 'publishTime': '2023-01-12 15: 03', 'updateTime': '2023-01-12 15: 03', 'willNature': 0, 'positionName': '创新俱乐部成员', 'minimumWage': 2000, 'maximumWage': 4000, 'payMethod': 1, 'exp': '经验不限', 'educationalRequirements': 0, 'count': 0, 'enterpriseAddress': {'id': '1613428212652703744', 'enterpriseId': '1613428212640120832', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440113', 'detailedAddress': '\xa0广州大学城(大学城北)创智园3栋4楼', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1613431494808829952', 'createTime': '2023-01-12 15: 03: 39', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 03: 39', 'jobPositionId': '1613431494808829952', 'labelId': '102', 'labelName': '产品设计', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+                    }
+                ], 'enterpriseExtInfo': {'id': '1613428212656898048', 'logo': '/user0dq9u2/2ccfd59d-138c-1995-969d-3644c5911d80/2ccfd59d-138c-1995-969d-3644c5911d80.png', 'shortName': '奇之', 'industry': '[
+                        "互联网",
+                        "数据服务"
+                    ]', 'econKind': '民营公司', 'personScope': '50-100人'
+                }
+            },
+            {'id': '1605028222989369345', 'publishTime': None, 'updateTime': '2022-12-20 10: 32', 'willNature': 2, 'positionName': '解决方案', 'minimumWage': 30000, 'maximumWage': 40000, 'payMethod': 1, 'exp': '不限', 'educationalRequirements': 3, 'count': 1, 'enterpriseAddress': {'id': '1605028173416890368', 'enterpriseId': '1605028173412696064', 'provinceCode': '420000', 'cityCode': '420100', 'regionCode': '420111', 'detailedAddress': '湖北省武汉市洪山区文化路53号', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1605028222989369348', 'createTime': '2022-12-20 10: 32: 02', 'creatorId': None, 'creatorName': None, 'updateTime': '2022-12-20 10: 32: 02', 'jobPositionId': '1605028222989369345', 'labelId': '1519614182750814208', 'labelName': '互联网', 'labelTypeId': '3', 'labelTypeName': None
+                    },
+                    {'id': '1605028222989369349', 'createTime': '2022-12-20 10: 32: 02', 'creatorId': None, 'creatorName': None, 'updateTime': '2022-12-20 10: 32: 02', 'jobPositionId': '1605028222989369345', 'labelId': '1519614182830505984', 'labelName': '软件', 'labelTypeId': '3', 'labelTypeName': None
+                    }
+                ], 'enterpriseExtInfo': {'id': '1605028174972977152', 'logo': '/co91420100081953646Y/1671503951722/1671503951722.png', 'shortName': '软帝联合', 'industry': '[
+                        "互联网",
+                        "软件"
+                    ]', 'econKind': '上市公司', 'personScope': '500-1000人'
+                }
+            },
+            {'id': '1605028222989369344', 'publishTime': None, 'updateTime': '2022-12-20 10: 32', 'willNature': 2, 'positionName': '产品总监', 'minimumWage': 20000, 'maximumWage': 35000, 'payMethod': 1, 'exp': '不限', 'educationalRequirements': 3, 'count': 1, 'enterpriseAddress': {'id': '1605028173416890368', 'enterpriseId': '1605028173412696064', 'provinceCode': '420000', 'cityCode': '420100', 'regionCode': '420111', 'detailedAddress': '湖北省武汉市洪山区文化路53号', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1605028222989369346', 'createTime': '2022-12-20 10: 32: 02', 'creatorId': None, 'creatorName': None, 'updateTime': '2022-12-20 10: 32: 02', 'jobPositionId': '1605028222989369344', 'labelId': '1519614182750814208', 'labelName': '互联网', 'labelTypeId': '3', 'labelTypeName': None
+                    },
+                    {'id': '1605028222989369347', 'createTime': '2022-12-20 10: 32: 02', 'creatorId': None, 'creatorName': None, 'updateTime': '2022-12-20 10: 32: 02', 'jobPositionId': '1605028222989369344', 'labelId': '1519614182830505984', 'labelName': '软件', 'labelTypeId': '3', 'labelTypeName': None
+                    }
+                ], 'enterpriseExtInfo': {'id': '1605028174972977152', 'logo': '/co91420100081953646Y/1671503951722/1671503951722.png', 'shortName': '软帝联合', 'industry': '[
+                        "互联网",
+                        "软件"
+                    ]', 'econKind': '上市公司', 'personScope': '500-1000人'
+                }
+            },
+            {'id': '1605028222985175041', 'publishTime': None, 'updateTime': '2022-12-20 10: 32', 'willNature': 2, 'positionName': '大数据架构师', 'minimumWage': 25000, 'maximumWage': 50000, 'payMethod': 1, 'exp': '不限', 'educationalRequirements': 3, 'count': 1, 'enterpriseAddress': {'id': '1605028173416890368', 'enterpriseId': '1605028173412696064', 'provinceCode': '420000', 'cityCode': '420100', 'regionCode': '420111', 'detailedAddress': '湖北省武汉市洪山区文化路53号', 'remarks': None
+                }, 'keywordList': [
+                    {'id': '1605028222989369344', 'createTime': '2022-12-20 10: 32: 02', 'creatorId': None, 'creatorName': None, 'updateTime': '2022-12-20 10: 32: 02', 'jobPositionId': '1605028222985175041', 'labelId': '1519614182750814208', 'labelName': '互联网', 'labelTypeId': '3', 'labelTypeName': None
+                    },
+                    {'id': '1605028222989369345', 'createTime': '2022-12-20 10: 32: 02', 'creatorId': None, 'creatorName': None, 'updateTime': '2022-12-20 10: 32: 02', 'jobPositionId': '1605028222985175041', 'labelId': '1519614182830505984', 'labelName': '软件', 'labelTypeId': '3', 'labelTypeName': None
+                    }
+                ], 'enterpriseExtInfo': {'id': '1605028174972977152', 'logo': '/co91420100081953646Y/1671503951722/1671503951722.png', 'shortName': '软帝联合', 'industry': '[
+                        "互联网",
+                        "软件"
+                    ]', 'econKind': '上市公司', 'personScope': '500-1000人'
+                }
+            }
+        ], 'pageable': {'sort': {'sorted': True, 'unsorted': False, 'empty': False
+            }, 'pageSize': 10, 'pageNumber': 0, 'offset': '0', 'paged': True, 'unpaged': False
+        }, 'totalElements': '1572', 'totalPages': 158, 'last': False, 'first': True, 'sort': {'sorted': True, 'unsorted': False, 'empty': False
+        }, 'numberOfElements': 10, 'size': 10, 'number': 0, 'empty': False
+    }
+}
+
+
+{'id': '1613439889204969472', 'enterpriseId': '1613428212640120832', 'publishTime': '2023-01-12 15: 37', 'updateTime': '2023-01-12 15: 37', 'willNature': 0, 'positionName': '自然语言处理工程师', 'minimumWage': 2000, 'maximumWage': 4000, 'payMethod': 1, 'exp': '经验不限', 'educationalRequirements': 3, 'count': 0, 'jobRequiredments': '【岗位职责】\n1.根据业务需求，负责自然语言处理方向的算法研究、产品开发和性能提升。 \n2.负责调研语义分析、深度学习、文本生成、摘要技术、信息检索、知识图谱等相关技术进展与最佳应用实例，并基于现有开源框架进一步开发。\n3.深入研发自然语言处理相关的算法，参与相关产品系统的设计和研发。\n4.需线下办公\n\n【任职要求】 \n1.本科生及以上学历，计算机/数学/信息/统计等专业优先。 \n2.熟练使用Python编程语言，熟悉至少一种框架：sklearn、PyTorch、Tensorflow。 \n3.熟练掌握NLP常见框架，并具备较强的技术调研能力。 属性分类、回归、聚类、关联挖掘、端到端训练等方法，并具有一定的实践经验。 \n4.对新技术有强烈的求知欲望，乐于钻研，善于分享。', 'welfare': '[]', 'workplace': None, 'deadline': '2029-01-01 00: 00', 'function': '[
+        "其他"
+    ]', 'publisher': '13801423250', 'status': 1, 'publisherName': '雷泓健', 'enterpriseName': '广州奇之信息技术有限公司', 'messageTemplateId': None, 'enterpriseAddress': {'id': '1613428212652703744', 'enterpriseId': '1613428212640120832', 'provinceCode': '440000', 'cityCode': '440100', 'regionCode': '440113', 'detailedAddress': '\xa0广州大学城(大学城北)创智园3栋4楼', 'remarks': None
+    }, 'keywordList': [
+        {'id': '1613439889204969472', 'createTime': '2023-01-12 15: 37: 00', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 37: 00', 'jobPositionId': '1613439889204969472', 'labelId': '1613439889179803648', 'labelName': '自然语言', 'labelTypeId': '3', 'labelTypeName': '职位关键词'
+        }
+    ], 'skillsList': [
+        {'id': '1613439889204969472', 'createTime': '2023-01-12 15: 37: 00', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 37: 00', 'jobPositionId': '1613439889204969472', 'labelId': '1613439889016225792', 'labelName': '算法研究', 'labelTypeId': '2', 'labelTypeName': '技能要求'
+        },
+        {'id': '1613439889204969473', 'createTime': '2023-01-12 15: 37: 00', 'creatorId': '13801423250', 'creatorName': 'user0dq9u2', 'updateTime': '2023-01-12 15: 37: 00', 'jobPositionId': '1613439889204969472', 'labelId': '1613439889083334656', 'labelName': '深度学习', 'labelTypeId': '2', 'labelTypeName': '技能要求'
+        }
+    ], 'resumeCount': 2
+}

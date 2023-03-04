@@ -1,0 +1,305 @@
+{'content': [
+        {'id': '1579833809761861632', 'username': '李先生', 'gender': 0, 'jobStatus': 1, 'exp': '无经验', 'expectPosition': '[
+                "数据分析师",
+                "数据挖掘工程师"
+            ]', 'willSalaryStart': 4000, 'willSalaryEnd': 8000, 'city': '[
+                "广东省",
+                "深圳市",
+                "南山区"
+            ]', 'keywordList': [
+                {'id': '1631544280894013440', 'enterpriseId': None, 'labelId': '1631544167765250048', 'labelName': 'python', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1631544280894013441', 'enterpriseId': None, 'labelId': '1631544280675913728', 'labelName': '数据分析', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1631544280894013442', 'enterpriseId': None, 'labelId': '1631544280734633984', 'labelName': '机器学习', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1631544280894013443', 'enterpriseId': None, 'labelId': '1631544280789159936', 'labelName': '深度学习', 'labelTypeId': '1', 'labelTypeName': None
+                }
+            ], 'publishTime': None, 'updateTime': '2023-03-03', 'skillMedalList': []
+        },
+        {'id': '1631284316023685120', 'username': '赖先生', 'gender': 0, 'jobStatus': 1, 'exp': '无经验', 'expectPosition': '[
+                "数据分析师",
+                "其他",
+                "数据挖掘工程师"
+            ]', 'willSalaryStart': 3000, 'willSalaryEnd': 6000, 'city': '[
+                "广东省",
+                "深圳市",
+                "宝安区"
+            ]', 'keywordList': [], 'publishTime': None, 'updateTime': '2023-03-03', 'skillMedalList': []
+        },
+        {'id': '1631491020585828352', 'username': '陈先生', 'gender': 0, 'jobStatus': 0, 'exp': '无经验', 'expectPosition': '[
+                "数据分析师",
+                "数据挖掘工程师",
+                "其他"
+            ]', 'willSalaryStart': 5000, 'willSalaryEnd': 7000, 'city': '[
+                "广东省",
+                "深圳市",
+                "宝安区"
+            ]', 'keywordList': [], 'publishTime': None, 'updateTime': '2023-03-03', 'skillMedalList': []
+        },
+        {'id': '1631135062105915392', 'username': '潘先生', 'gender': 0, 'jobStatus': 1, 'exp': '无经验', 'expectPosition': '[
+                "其他"
+            ]', 'willSalaryStart': 3000, 'willSalaryEnd': 5000, 'city': '[
+                "广东省",
+                "广州市",
+                "天河区"
+            ]', 'keywordList': [
+                {'id': '1631136323433791488', 'enterpriseId': None, 'labelId': '1630856681036582912', 'labelName': 'Python', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1631136323433791489', 'enterpriseId': None, 'labelId': '1631126787314552832', 'labelName': 'Linux', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1631136323433791490', 'enterpriseId': None, 'labelId': '1631136323375075328', 'labelName': 'SQL', 'labelTypeId': '1', 'labelTypeName': None
+                }
+            ], 'publishTime': None, 'updateTime': '2023-03-02', 'skillMedalList': []
+        },
+        {'id': '1630852451164880896', 'username': '潘先生', 'gender': 0, 'jobStatus': 0, 'exp': '无经验', 'expectPosition': '[
+                "数据分析师",
+                "数据挖掘工程师"
+            ]', 'willSalaryStart': 3000, 'willSalaryEnd': 6000, 'city': '[
+                "广东省",
+                "广州市",
+                "天河区"
+            ]', 'keywordList': [
+                {'id': '1630856706508587008', 'enterpriseId': None, 'labelId': '1630856681036582912', 'labelName': 'Python', 'labelTypeId': '1', 'labelTypeName': None
+                }
+            ], 'publishTime': None, 'updateTime': '2023-03-02', 'skillMedalList': []
+        },
+        {'id': '1631126636327993344', 'username': '潘先生', 'gender': 0, 'jobStatus': 0, 'exp': '无经验', 'expectPosition': '[
+                "其他"
+            ]', 'willSalaryStart': 3000, 'willSalaryEnd': 5000, 'city': '[
+                "广东省",
+                "深圳市",
+                "宝安区"
+            ]', 'keywordList': [
+                {'id': '1631126787381657600', 'enterpriseId': None, 'labelId': '1630856681036582912', 'labelName': 'Python', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1631126787381657601', 'enterpriseId': None, 'labelId': '1631126787314552832', 'labelName': 'Linux', 'labelTypeId': '1', 'labelTypeName': None
+                }
+            ], 'publishTime': None, 'updateTime': '2023-03-02', 'skillMedalList': []
+        },
+        {'id': '1630105867208753152', 'username': '陈先生', 'gender': 0, 'jobStatus': 1, 'exp': '无经验', 'expectPosition': '[
+                "数据分析师",
+                "自然语言处理工程师",
+                "机器学习工程师"
+            ]', 'willSalaryStart': 3000, 'willSalaryEnd': 5000, 'city': '[
+                "广东省",
+                "广州市",
+                "天河区"
+            ]', 'keywordList': [], 'publishTime': None, 'updateTime': '2023-03-01', 'skillMedalList': []
+        },
+        {'id': '1630884821167374336', 'username': '李女士', 'gender': 1, 'jobStatus': 0, 'exp': '1年工作经验', 'expectPosition': '[
+                "数据分析师"
+            ]', 'willSalaryStart': 5000, 'willSalaryEnd': 8000, 'city': '[
+                "广东省",
+                "广州市",
+                "白云区"
+            ]', 'keywordList': [
+                {'id': '1630888253978705920', 'enterpriseId': None, 'labelId': '1630888253949349888', 'labelName': '大数据分析师', 'labelTypeId': '1', 'labelTypeName': None
+                }
+            ], 'publishTime': None, 'updateTime': '2023-03-01', 'skillMedalList': []
+        },
+        {'id': '1630818546172952576', 'username': '陈先生', 'gender': 0, 'jobStatus': 1, 'exp': '无经验', 'expectPosition': '[
+                "数据分析师",
+                "数据挖掘工程师",
+                "算法工程师"
+            ]', 'willSalaryStart': 6000, 'willSalaryEnd': 8000, 'city': '[
+                "广东省",
+                "广州市",
+                "天河区"
+            ]', 'keywordList': [
+                {'id': '1630821571255992320', 'enterpriseId': None, 'labelId': '1630821445380739072', 'labelName': '数据分析', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1630821571255992321', 'enterpriseId': None, 'labelId': '1630821511411666944', 'labelName': 'python', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1630821571255992322', 'enterpriseId': None, 'labelId': '1630821571151138816', 'labelName': 'MySQL', 'labelTypeId': '1', 'labelTypeName': None
+                }
+            ], 'publishTime': None, 'updateTime': '2023-03-01', 'skillMedalList': []
+        },
+        {'id': '1627308899029876736', 'username': '张先生', 'gender': 0, 'jobStatus': 1, 'exp': '无经验', 'expectPosition': '[
+                "数据分析师",
+                "数据挖掘工程师",
+                "算法工程师"
+            ]', 'willSalaryStart': 50000, 'willSalaryEnd': 55000, 'city': '[
+                "广东省",
+                "广州市",
+                "番禺区"
+            ]', 'keywordList': [
+                {'id': '1627309458852020224', 'enterpriseId': None, 'labelId': '1627308981364068352', 'labelName': '深度学习', 'labelTypeId': '1', 'labelTypeName': None
+                },
+                {'id': '1627309458852020225', 'enterpriseId': None, 'labelId': '1627309458763943936', 'labelName': '网页逆向分析', 'labelTypeId': '1', 'labelTypeName': None
+                }
+            ], 'publishTime': None, 'updateTime': '2023-02-26', 'skillMedalList': []
+        }
+    ], 'pageable': {'sort': {'sorted': True, 'unsorted': False, 'empty': False
+        }, 'pageSize': 10, 'pageNumber': 0, 'offset': '0', 'paged': True, 'unpaged': False
+    }, 'totalElements': '10905', 'totalPages': 1091, 'last': False, 'first': True, 'sort': {'sorted': True, 'unsorted': False, 'empty': False
+    }, 'numberOfElements': 10, 'size': 10, 'number': 0, 'empty': False
+}
+
+{
+    "status": 200,
+    "message": "操作成功",
+    "data": {
+        "id": "1579833809761861632",
+        "resumeName": "python数据分析师",
+        "username": "李先生",
+        "gender": 0,
+        "birthday": "2000-05-29 00:00:00.0",
+        "address": "[\"广东省\",\"中山市\",\"中山\"]",
+        "arrivalTime": "时间待议",
+        "publishTime": null,
+        "politicalStatus": "MASSES",
+        "jobStatus": 1,
+        "exp": "无经验",
+        "selfEvaluation": "担任过班干、技术部部长、项目负责人因此具有一定组织力，\n技术方面：荣获python编程国赛三等奖及人社部python程序员三级职业技能证书，科大讯飞1+X中级数据分析师。",
+        "expectIndustry": "[\"不限\"]",
+        "expectPosition": "[\"数据分析师\",\"数据挖掘工程师\"]",
+        "willSalaryStart": 4000,
+        "willSalaryEnd": 8000,
+        "willNature": 0,
+        "city": "[\"广东省\",\"深圳市\",\"南山区\"]",
+        "keywordList": [
+            {
+                "id": "1631544280894013440",
+                "enterpriseId": null,
+                "labelId": "1631544167765250048",
+                "labelName": "python",
+                "labelTypeId": "1",
+                "labelTypeName": null
+            },
+            {
+                "id": "1631544280894013441",
+                "enterpriseId": null,
+                "labelId": "1631544280675913728",
+                "labelName": "数据分析",
+                "labelTypeId": "1",
+                "labelTypeName": null
+            },
+            {
+                "id": "1631544280894013442",
+                "enterpriseId": null,
+                "labelId": "1631544280734633984",
+                "labelName": "机器学习",
+                "labelTypeId": "1",
+                "labelTypeName": null
+            },
+            {
+                "id": "1631544280894013443",
+                "enterpriseId": null,
+                "labelId": "1631544280789159936",
+                "labelName": "深度学习",
+                "labelTypeId": "1",
+                "labelTypeName": null
+            }
+        ],
+        "educationExperienceList": [],
+        "projectExperienceList": [
+            {
+                "id": "1631539077432082432",
+                "resumeId": "1579833809761861632",
+                "projectName": "银行客户忠诚度分析",
+                "company": null,
+                "roleName": "数据分析",
+                "startTime": "2022-10-11",
+                "endTime": "2022-10-13",
+                "description": "1 对客户数据进行预处理，并对字符型数据进行特征编码。\n2 基于短期客户产品购买数据，分析不同指标客户对银行产品的购买依 赖度，并进行可视化呈现。\n3 基于长期客户资源信息数据，分析客户流失因素，并进行可视化呈现。\n4 依据长期客户资源信息数据的分析结果构建相关指标，对银行客户长 期忠诚度进行预测。",
+                "achievement": null
+            }
+        ],
+        "competitionExperienceList": [
+            {
+                "id": "1631539895929536512",
+                "resumeId": "1579833809761861632",
+                "type": "泰迪杯",
+                "name": "第四届泰迪杯数据分析技能赛",
+                "level": "一等奖",
+                "certificate": null
+            },
+            {
+                "id": "1631540897890041856",
+                "resumeId": "1579833809761861632",
+                "type": "其他",
+                "name": "“第七届中国国际“互联网+大学生创新创业大赛广东省分赛",
+                "level": "铜牌",
+                "certificate": null
+            },
+            {
+                "id": "1631541552457318400",
+                "resumeId": "1579833809761861632",
+                "type": "其他",
+                "name": "计算机程序设计员(Python编程)竞赛全国总决赛",
+                "level": "三等奖",
+                "certificate": null
+            },
+            {
+                "id": "1631540393147498496",
+                "resumeId": "1579833809761861632",
+                "type": "泰迪杯",
+                "name": "第九届泰迪杯数据挖掘挑战赛",
+                "level": "三等奖",
+                "certificate": null
+            }
+        ],
+        "trainingExperienceList": [],
+        "professionalList": [],
+        "skillList": [
+            {
+                "id": "1631541605171331072",
+                "resumeId": "1579833809761861632",
+                "name": "python",
+                "level": "MASTER"
+            },
+            {
+                "id": "1631541689715916800",
+                "resumeId": "1579833809761861632",
+                "name": "数据分析",
+                "level": "SKILLED"
+            },
+            {
+                "id": "1631541760972947456",
+                "resumeId": "1579833809761861632",
+                "name": "数据建模（机器学习）",
+                "level": "SKILLED"
+            },
+            {
+                "id": "1631541808595075072",
+                "resumeId": "1579833809761861632",
+                "name": "网络爬虫",
+                "level": "GOOD"
+            }
+        ],
+        "languageList": [],
+        "certList": [
+            {
+                "id": "1631542504400748544",
+                "resumeId": "1579833809761861632",
+                "type": "其他",
+                "name": "1+X中级数据分析师",
+                "getTime": null,
+                "attachment": "/userjcq1mj/1677825015484/1677825015484.png"
+            }
+        ],
+        "workExperienceList": [
+            {
+                "id": "1631544600407703552",
+                "resumeId": "1579833809761861632",
+                "willNature": null,
+                "company": "广东泰迪智能科技股份有限公司",
+                "industry": "[\"互联网\"]",
+                "positionName": "助教",
+                "joinTime": "2023-01-01",
+                "outTime": "2023-03-15",
+                "description": "人工智能方面的技术支持，包括软件安装、理论知识和课程内容等答疑工作。"
+            }
+        ],
+        "attachmentList": [
+            {
+                "id": "1631542841580847104",
+                "resumeId": "1579833809761861632",
+                "name": "李晓简历",
+                "description": "简历",
+                "file": "/userjcq1mj/1677825079339/1677825079339.pdf"
+            }
+        ]
+    }
+}

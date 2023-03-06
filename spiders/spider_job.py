@@ -11,6 +11,11 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15"
 }
 
+def post_string(text):
+    if isinstance(text, str):
+        return text.replace('\n', '')
+    return ''
+
 frame_json = {}
 
 def get_one_work_information(data_json):
@@ -26,15 +31,15 @@ def get_one_work_information(data_json):
 
     items_json = {
         'job_id': '\t' + str(data['id']),
-        'company_full_name': data['enterpriseName'],
-        'company_short_name': data_json['enterpriseExtInfo']['shortName'],
-        'position_name': data['positionName'],
+        'company_full_name': post_string(data['enterpriseName']),
+        'company_short_name': post_string(data_json['enterpriseExtInfo']['shortName']),
+        'position_name': post_string(data['positionName']),
         'job_min_wage': data['minimumWage'],
         'job_max_wage': data['maximumWage'],
         'job_wage_kind': data['payMethod'],
         'require_kind': data['willNature'],
         'require_edu': data['educationalRequirements'],
-        'require_exp': data['exp'],
+        'require_exp': post_string(data['exp']),
         'num_people': data['count'],
         'deadline': data['deadline'],
         'company_ind': ','.join(eval(data_json['enterpriseExtInfo']['industry'])),

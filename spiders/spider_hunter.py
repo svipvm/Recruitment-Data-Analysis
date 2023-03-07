@@ -37,7 +37,7 @@ def get_one_hunter_information(data_json):
     # print(data)
 
     items_json = {
-        'job_id': '\t' + str(data['id']),
+        'hunter_id': '\t' + str(data['id']),
         'hunter_name': data['username'],
         'hunter_sex': data['gender'],
         'hunter_bthday': data['birthday'],

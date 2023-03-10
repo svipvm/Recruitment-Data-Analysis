@@ -13,9 +13,15 @@ headers = {
 
 frame_json = {}
 
-def delete_nil_string(obj):
+def delete_wrap(text):
+    return text.replace('\n', '')
+
+def delete_blank(text):
+    return text.replace(' ', '')
+
+def delete_con(text):
     try:
-        return obj.replace('\n', '')
+        return delete_blank(delete_wrap(text))
     except:
         return ''
 
@@ -28,13 +34,7 @@ def string_to_list(obj):
 def get_one_hunter_information(data_json):
     # print(data_json)
     response = requests.get(hunter_url.format(data_json['id']), headers=headers)
-    data = json.loads(response.text)
-
-    try:
-        data = data['data']
-    except:
-        return False
-    # print(data)
+    data = json.loads(response.text)['data']
 
     items_json = {
         'hunter_id': '\t' + str(data['id']),
@@ -44,7 +44,7 @@ def get_one_hunter_information(data_json):
         'hunter_addr': ''.join(string_to_list(data['address'])),
         'hunter_exp': data['exp'],
         'hunter_sociality': data['politicalStatus'],
-        'hunter_eval': delete_nil_string(data['selfEvaluation']),
+        'hunter_eval': delete_con(data['selfEvaluation']),
         'exp_position': string_to_list(data['expectPosition']),
         'exp_min_wage': data['willSalaryStart'],
         'exp_max_wage': data['willSalaryEnd'],
@@ -56,12 +56,12 @@ def get_one_hunter_information(data_json):
         'exp_report': data['arrivalTime'],
         'resume_keys': [item['labelName'] for item in data['keywordList']],
         'job_exps': ['{}[{}]:{}'.format(
-            item['company'], item['positionName'], delete_nil_string(item['description'])) for item in data['workExperienceList']],
+            item['company'], item['positionName'], delete_con(item['description'])) for item in data['workExperienceList']],
         'project_exps': ['{}[{}]:{}'.format(
-            item['projectName'], item['roleName'], delete_nil_string(item['description'])) for item in data['projectExperienceList']],
+            item['projectName'], item['roleName'], delete_con(item['description'])) for item in data['projectExperienceList']],
         'competition_exps': ['{}[{}]:{}'.format(
             item['type'], item['level'], item['name']) for item in data['competitionExperienceList']],
-        'education_exps': ['{}[{}]:[{}]'.format(
+        'education_exps': ['{}[{}]:{}'.format(
             item['school'], item['educationalBackground'], item['speciality']) for item in data['educationExperienceList']],
         'training_exps': ['{}[{}]'.format(item['orgName'], item['recordName']) for item in data['trainingExperienceList']],
         # 'professional_keys': [list]
@@ -99,8 +99,6 @@ def get_all_work_information():
                 if get_one_hunter_information(json_item):
                     print('\t\t[√] id ' + json_item['id'] + " finish")
                     num_elements += 1
-                else:
-                    print('\t\t[×] id ' + json_item['id'] + " error")
             except Exception as e:
                 print('\t\t[Exception]:', json_item['id'], e)
             # break

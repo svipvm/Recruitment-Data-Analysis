@@ -11,49 +11,42 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15"
 }
 
-def post_string(text):
-    if isinstance(text, str):
-        return text.replace('\n', '')
-    return ''
+def delete_wrap(text):
+    return text.replace('\n', '')
+
+def delete_blank(text):
+    return text.replace(' ', '')
+
+def delete_con(text):
+    return delete_blank(delete_wrap(text))
 
 frame_json = {}
 
 def get_one_work_information(data_json):
     # print(data_json)
     response = requests.get(work_url.format(data_json['id']), headers=headers)
-    data = json.loads(response.text)
-
-    try:
-        data = data['data']
-    except:
-        return False
-    # print(data)
+    data = json.loads(response.text)['data']
 
     items_json = {
         'job_id': '\t' + str(data['id']),
-        'company_full_name': post_string(data['enterpriseName']),
-        'company_short_name': post_string(data_json['enterpriseExtInfo']['shortName']),
-        'position_name': post_string(data['positionName']),
+        'company_full_name': delete_con(data['enterpriseName']),
+        'company_short_name': delete_con(data_json['enterpriseExtInfo']['shortName']),
+        'position_name': delete_con(data['positionName']),
         'job_min_wage': data['minimumWage'],
         'job_max_wage': data['maximumWage'],
         'job_wage_kind': data['payMethod'],
         'require_kind': data['willNature'],
         'require_edu': data['educationalRequirements'],
-        'require_exp': post_string(data['exp']),
+        'require_exp': delete_con(data['exp']),
         'num_people': data['count'],
         'deadline': data['deadline'],
-        'company_ind': ','.join(eval(data_json['enterpriseExtInfo']['industry'])),
-        'position_keys': ','.join([item['labelName'] for item in data['keywordList']]),
-        'skill_keys': ','.join([item['labelName'] for item in data['skillsList']]),
-        'job_require': ''.join(data['jobRequiredments'].split('\n')),
-        'job_welfare': ','.join(eval(data['welfare'])),
-        # 'company_addr_code': eval(data['enterpriseAddress']['regionCode']), # 'provinceCode', 'cityCode'
+        'company_ind': eval(data_json['enterpriseExtInfo']['industry']),
+        'position_keys': [item['labelName'] for item in data['keywordList']],
+        'skill_keys': [item['labelName'] for item in data['skillsList']],
+        'job_require': delete_con(data['jobRequiredments']),
+        'job_welfare': eval(data['welfare']),
         'company_addr': data['enterpriseAddress']['detailedAddress']
     }
-    try:
-        items_json['company_addr_code'] = eval(data['enterpriseAddress']['regionCode'])
-    except:
-        items_json['company_addr_code'] = -1
     # print(items_json)
 
     if len(frame_json) == 0:
@@ -69,7 +62,7 @@ def get_one_work_information(data_json):
 def get_all_work_information():
     num_page, num_elements = 1, 1
     while True:
-        response = requests.get(base_url.format(num_page))
+        response = requests.get(base_url.format(num_page), headers=headers)
         data = json.loads(response.text)['data']
         # print(data['content'])
 
@@ -85,13 +78,11 @@ def get_all_work_information():
                 if get_one_work_information(json_item):
                     print('\t\t[√] id ' + json_item['id'] + " finish")
                     num_elements += 1
-                else:
-                    print('\t\t[×] id ' + json_item['id'] + " error")
-            except:
-                print('\t\t[×] id ' + json_item['id'] + " exception")
+            except Exception as e:
+                print('\t\t[Exception]:', json_item['id'], e)
 
         num_page += 1
-        time.sleep(0.3)
+        time.sleep(0.1)
         
         if last_flag: break
 

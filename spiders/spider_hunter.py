@@ -43,7 +43,7 @@ def get_one_hunter_information(data_json):
         'hunter_bthday': data['birthday'],
         'hunter_addr': ''.join(string_to_list(data['address'])),
         'hunter_exp': data['exp'],
-        'hunter_sociality': data['politicalStatus'],
+        'hunter_soci': data['politicalStatus'],
         'hunter_eval': delete_con(data['selfEvaluation']),
         'exp_position': string_to_list(data['expectPosition']),
         'exp_min_wage': data['willSalaryStart'],

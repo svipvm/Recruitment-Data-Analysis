@@ -203,6 +203,15 @@ def set_score_by_multi_id(obj_type, row_key, col_key, score_id, score):
     else:
         print(row_id, col_id)
 
+def get_score_by_multi_id(obj_type, row_key, col_key, score_id):
+    obj_name = 'job' if obj_type == 0 else 'hunters'
+    row_id = get_index_by_object_id(obj_type, row_key)
+    col_id = get_index_by_object_id(obj_type ^ 1, col_key)
+    if row_id != -1 and col_id != -1:
+        return both_score_info_bak[obj_name][row_id][col_id][score_id]
+    else:
+        print(row_id, col_id)
+
 def save_both_info_map_database():
     with open(both_info_map_bak_file, 'w') as f:
         f.write(json.dumps(both_info_map_bak, cls=NpEncoder))

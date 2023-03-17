@@ -127,7 +127,7 @@ def calc_base_score(job_data: dict, hunter_data: dict):
 
 if __name__ == '__main__':
     # size = job_data.shape[0]
-    size = 150
+    size = 100
     for index_ in tqdm(range(size)):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
@@ -147,21 +147,28 @@ if __name__ == '__main__':
     result = []
     for key1, job_item in job_base_dict.items():
         part_result = []
+        valid_job = check_base_info_item(0, key1, job_item)
         for key2, hunter_item in hunter_base_dict.items():
             # print(job_item, hunter_item)
-            base_score = calc_base_score(job_item, hunter_item)
+            valid_hunter = check_base_info_item(1, key2, hunter_item)
+            if valid_job and valid_hunter:
+                base_score = get_score_by_multi_id(0, key1, key2, 0)
+            else:
+                base_score = calc_base_score(job_item, hunter_item)
+                print(key1, key2, base_score)
+                set_score_by_multi_id(0, key1, key2, 0, base_score)
             part_result.append(base_score)
-            set_score_by_multi_id(0, key1, key2, 0, base_score)
+                
         #     break
         result.append(part_result)
 
-    for inx, (job_id, job_info) in enumerate(job_base_dict.items()):
-    # for _, (hunter_id, hunter_info) in enumerate(hunter_base_dict.items()):
-        iny = np.argmax(result, axis=1)[inx]
-        print(show_base_info(job_base_dict, inx),
-            '\n',
-            show_base_info(hunter_base_dict, iny),
-            '\nscore:',
-            result[inx][iny])
+    # for inx, (job_id, job_info) in enumerate(job_base_dict.items()):
+    # # for _, (hunter_id, hunter_info) in enumerate(hunter_base_dict.items()):
+    #     iny = np.argmax(result, axis=1)[inx]
+    #     print(show_base_info(job_base_dict, inx),
+    #         '\n',
+    #         show_base_info(hunter_base_dict, iny),
+    #         '\nscore:',
+    #         result[inx][iny])
 
     save_both_score_info_database()

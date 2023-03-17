@@ -3,7 +3,7 @@ import jieba, nltk, re, cpca, torch, sys, psutil, os
 import pandas as pd
 import numpy as np
 # sys.path.append('sentence')
-from sentence_util import *
+from database_util import *
 from tqdm import tqdm
 
 require_kind_json = { 0: '实习', 1: '不限', 2: '全职'} # self to fill
@@ -127,7 +127,7 @@ def calc_base_score(job_data: dict, hunter_data: dict):
 
 if __name__ == '__main__':
     # size = job_data.shape[0]
-    size = 100
+    size = 150
     for index_ in tqdm(range(size)):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
@@ -141,13 +141,17 @@ if __name__ == '__main__':
     save_base_info_database(1, hunter_base_dict)
 
     save_both_info_map_database()
+
+    expand_score_database()
     
     result = []
     for key1, job_item in job_base_dict.items():
         part_result = []
         for key2, hunter_item in hunter_base_dict.items():
             # print(job_item, hunter_item)
-            part_result.append(calc_base_score(job_item, hunter_item))
+            base_score = calc_base_score(job_item, hunter_item)
+            part_result.append(base_score)
+            set_score_by_multi_id(0, key1, key2, 0, base_score)
         #     break
         result.append(part_result)
 
@@ -160,4 +164,4 @@ if __name__ == '__main__':
             '\nscore:',
             result[inx][iny])
 
-
+    save_both_score_info_database()

@@ -11,26 +11,32 @@ hunter_data = pd.read_csv(hunter_csv_file, encoding='GBK')
 base_job_info_bak_file = 'database/base_job_info.json'
 try:
     with open(base_job_info_bak_file, 'r') as f:
-        base_job_info_bak = f.read()
-        base_job_info_bak = json.loads(base_job_info_bak)
+        base_job_info_bak = json.loads(f.read())
 except:
     base_job_info_bak = {}
 
 base_hunter_info_bak_file = 'database/base_hunter_info.json'
 try:
     with open(base_hunter_info_bak_file, 'r') as f:
-        base_hunter_info_bak = f.read()
-        base_hunter_info_bak = json.loads(base_hunter_info_bak)
+        base_hunter_info_bak = json.loads(f.read())
 except:
     base_hunter_info_bak = {}
 
 both_info_map_bak_file = 'database/both_info_map.json'
 try:
     with open(both_info_map_bak_file, 'r') as f:
-        both_info_map_bak = f.read()
-        both_info_map_bak = json.loads(both_info_map_bak)
+        both_info_map_bak = json.loads(f.read())
 except:
     both_info_map_bak = {}
+_max_index_for_both_info = [-1, -1]
+
+both_score_info_bak_file = 'database/both_score_info.json'
+try:
+    with open(both_score_info_bak_file, 'r') as f:
+        both_score_info_bak = json.loads(f.read())
+except:
+    both_score_info_bak = {}
+# exists_obj_id = {}
 
 model_path = '/home/vmice/projects/sbert-base-chinese-nli'
 model = SentenceTransformer(model_path)
@@ -151,7 +157,56 @@ def set_index_by_object_id(obj_type, obj_id):
         both_info_map_bak[obj_name] = {}
     if obj_id not in both_info_map_bak[obj_name]:
         both_info_map_bak[obj_name][obj_id] = len(both_info_map_bak[obj_name])
+    _max_index_for_both_info[obj_type] = max(_max_index_for_both_info[obj_type], 
+                                                len(both_info_map_bak[obj_name]))
+
+def _get_max_index_for_both_info():
+    return _max_index_for_both_info
+
+def _expand_score_database_by_obj_type(obj_type):
+    num_job, num_hunter = _get_max_index_for_both_info()
+    max_inx, max_iny = (num_job, num_hunter) if obj_type == 0 else (num_hunter, num_job)
+    obj_name = 'job' if obj_type == 0 else 'hunters'
+    if obj_name not in both_score_info_bak:
+        both_score_info_bak[obj_name] = [[]]
+    if not isinstance(both_score_info_bak[obj_name], np.ndarray):
+        both_score_info_bak[obj_name] = np.array(both_score_info_bak[obj_name], np.float16)
+    if both_score_info_bak[obj_name].shape[1] == 0:
+        both_score_info_bak[obj_name] = np.array([[[-1.0] * 3] * max_iny] * max_inx)
+    else:
+        num_inx, num_iny = both_score_info_bak[obj_name].shape[:2]
+        # print(max_inx, num_inx, max_iny, num_iny)
+        # expend for col
+        if max_iny != num_iny:
+            both_score_info_bak[obj_name] = np.column_stack((
+                both_score_info_bak[obj_name],
+                np.array([[[-1.0] * 3] * (max_iny - num_iny)] * num_inx)
+            ))
+        # expend for row
+        if max_inx != num_inx:
+            both_score_info_bak[obj_name] = np.row_stack((
+                both_score_info_bak[obj_name],
+                np.array([[[-1.0] * 3] * max_iny] * (max_inx - num_inx))
+            ))
+
+def expand_score_database():
+    _expand_score_database_by_obj_type(0)
+    _expand_score_database_by_obj_type(1)
+
+def set_score_by_multi_id(obj_type, row_key, col_key, score_id, score):
+    obj_name = 'job' if obj_type == 0 else 'hunters'
+    row_id = get_index_by_object_id(obj_type, row_key)
+    col_id = get_index_by_object_id(obj_type ^ 1, col_key)
+    # print(row_id, col_id, score_id, score)
+    if row_id != -1 and col_id != -1:
+        both_score_info_bak[obj_name][row_id][col_id][score_id] = score
+    else:
+        print(row_id, col_id)
 
 def save_both_info_map_database():
     with open(both_info_map_bak_file, 'w') as f:
         f.write(json.dumps(both_info_map_bak, cls=NpEncoder))
+
+def save_both_score_info_database():
+    with open(both_score_info_bak_file, 'w') as f:
+        f.write(json.dumps(both_score_info_bak, cls=NpEncoder))

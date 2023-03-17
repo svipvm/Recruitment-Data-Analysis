@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-import jieba, nltk, re, cpca, torch, sys, psutil, os
+import jieba, nltk, re, cpca, torch, sys, psutil, os, time
 import pandas as pd
 import numpy as np
 # sys.path.append('sentence')
@@ -91,30 +91,43 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
     dict_data.update(encode_result)
 
 
-def calc_base_score(job_data: dict, hunter_data: dict):
+def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
     base_score = 1.0
-    for key, job_item in job_data.items():
-        hunter_item = hunter_data[key]
+    for key, main_item in main_obj.items():
+        vice_item = vice_obj[key]
         
-        sentence1, sentence2 = job_item['sentence'], hunter_item['sentence']
+        sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
         if key in with_encode_items:
-            vector1, vector2 = job_item['vector'], hunter_item['vector']
-            score = every_multi_score(vector1, vector2)
+            vector1, vector2 = main_item['vector'], vice_item['vector']
+            if obj_type == 0:
+                if len(vector1) == 0: score = 1
+                elif len(vector2) == 0: score = 0.6
+                else: score = every_multi_score(vector1, vector2, 'mean')
+            else:
+                if len(vector1) == 0 or len(vector2) == 0: score = 1
+                else: score = every_multi_score(vector1, vector2, 'max')
         elif key == 'job_wage':
             sentence1 = np.mean(sentence1)
             sentence2 = np.mean(sentence2)
             sub_wage = sentence1 - sentence2
-            if sub_wage > 0: score = 1
-            else:
-                score = max(0, 1 + sub_wage / 1000)
+            dc = 1 if obj_type == 0 else -1
+            score = 1 if dc * sub_wage > 0 else max(0, 1 + dc * sub_wage / 1000)
         elif key == 'job_kind':
             score = float(sentence1 == sentence2)
         elif key == 'exp_edu':
-            score = 0.2 if len(sentence2) == 0 else float(
-                        get_max_edu_level(sentence1, require_edu_re_json) <= \
-                            get_max_edu_level(sentence2, require_edu_re_json))
+            if obj_type == 0:
+                score = 0.2 if len(sentence2) == 0 else float(
+                            get_max_edu_level(sentence1, require_edu_re_json) <= \
+                                get_max_edu_level(sentence2, require_edu_re_json))
+            else:
+                score = 1 if len(sentence2) == 0 else float(
+                            get_max_edu_level(sentence1, require_edu_re_json) >= \
+                                get_max_edu_level(sentence2, require_edu_re_json))
         elif key == 'job_years':
-            score = float(np.min(sentence1) <= np.max(sentence2))
+            if obj_type == 0:
+                score = float(np.min(sentence1) <= np.max(sentence2))
+            else:
+                score = float(np.min(sentence1) >= np.max(sentence2))
         elif key == 'cor_addr':
             if re.findall(r'(.*)省', sentence1) == re.findall(r'(.*)省', sentence2):
                 score = 0.5
@@ -126,6 +139,7 @@ def calc_base_score(job_data: dict, hunter_data: dict):
     return base_score
 
 if __name__ == '__main__':
+    start_time = time.time()
     # size = job_data.shape[0]
     size = 100
     for index_ in tqdm(range(size)):
@@ -147,16 +161,16 @@ if __name__ == '__main__':
     result = []
     for key1, job_item in job_base_dict.items():
         part_result = []
-        valid_job = check_base_info_item(0, key1, job_item)
+        valid_job = info_is_modified(0, key1)
         for key2, hunter_item in hunter_base_dict.items():
             # print(job_item, hunter_item)
-            valid_hunter = check_base_info_item(1, key2, hunter_item)
-            if valid_job and valid_hunter:
-                base_score = get_score_by_multi_id(0, key1, key2, 0)
-            else:
-                base_score = calc_base_score(job_item, hunter_item)
-                print(key1, key2, base_score)
+            valid_hunter = info_is_modified(1, key2)
+            if valid_job or valid_hunter:
+                base_score = calc_base_score(0, job_item, hunter_item)
+                # print(key1, key2, base_score)
                 set_score_by_multi_id(0, key1, key2, 0, base_score)
+            else:
+                base_score = get_score_by_multi_id(0, key1, key2, 0)
             part_result.append(base_score)
                 
         #     break
@@ -171,4 +185,33 @@ if __name__ == '__main__':
     #         '\nscore:',
     #         result[inx][iny])
 
+    result = []
+    for key1, hunter_item in hunter_base_dict.items():
+        part_result = []
+        valid_hunter = info_is_modified(1, key1)
+        for key2, job_item in job_base_dict.items():
+            # print(job_item, hunter_item)
+            valid_job = info_is_modified(0, key2)
+            if valid_job or valid_hunter:
+                base_score = calc_base_score(1, hunter_item, job_item)
+                # print(key1, key2, base_score)
+                set_score_by_multi_id(1, key1, key2, 0, base_score)
+            else:
+                base_score = get_score_by_multi_id(1, key1, key2, 0)
+            part_result.append(base_score)
+                
+        #     break
+        result.append(part_result)
+
+    # for inx, (hunter_id, hunter_info) in enumerate(hunter_base_dict.items()):
+    # # for _, (hunter_id, hunter_info) in enumerate(hunter_base_dict.items()):
+    #     iny = np.argmax(result, axis=1)[inx]
+    #     print(show_base_info(job_base_dict, iny),
+    #         '\n',
+    #         show_base_info(hunter_base_dict, inx),
+    #         '\nscore:',
+    #         result[inx][iny])
+
     save_both_score_info_database()
+
+    print('times:', time.time() - start_time)

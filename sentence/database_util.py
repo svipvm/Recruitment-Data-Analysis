@@ -8,38 +8,39 @@ hunter_csv_file = 'datasets/hunter-info.csv'
 job_data = pd.read_csv(job_csv_file, encoding='GBK')
 hunter_data = pd.read_csv(hunter_csv_file, encoding='GBK')
 
-base_job_info_bak_file = 'database/base_job_info.json'
+BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
 try:
-    with open(base_job_info_bak_file, 'r') as f:
+    with open(BASE_JOB_INFO_BAK_FILE, 'r') as f:
         base_job_info_bak = json.loads(f.read())
 except:
     base_job_info_bak = {}
 
-base_hunter_info_bak_file = 'database/base_hunter_info.json'
+BASE_HUNTER_INFO_BAK_FILE = 'database/base_hunter_info.json'
 try:
-    with open(base_hunter_info_bak_file, 'r') as f:
+    with open(BASE_HUNTER_INFO_BAK_FILE, 'r') as f:
         base_hunter_info_bak = json.loads(f.read())
 except:
     base_hunter_info_bak = {}
 
-both_info_map_bak_file = 'database/both_info_map.json'
+BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map.json'
 try:
-    with open(both_info_map_bak_file, 'r') as f:
+    with open(BOTH_INFO_MAP_BAK_FILE, 'r') as f:
         both_info_map_bak = json.loads(f.read())
 except:
     both_info_map_bak = {}
 _max_index_for_both_info = [-1, -1]
 
-both_score_info_bak_file = 'database/both_score_info.json'
+BOTH_SCORE_INFO_BAK_FILE = 'database/both_score_info.json'
 try:
-    with open(both_score_info_bak_file, 'r') as f:
+    with open(BOTH_SCORE_INFO_BAK_FILE, 'r') as f:
         both_score_info_bak = json.loads(f.read())
 except:
     both_score_info_bak = {}
 # exists_obj_id = {}
+modified_obj = {}
 
-model_path = '/home/vmice/projects/sbert-base-chinese-nli'
-model = SentenceTransformer(model_path)
+MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
+model = SentenceTransformer(MODEL_PATH)
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -103,18 +104,19 @@ def change_years(years):
 def every_multi_score(vector1, vector2, method='mean'):
     if not isinstance(vector1, torch.Tensor): vector1 = torch.tensor(vector1)
     if not isinstance(vector2, torch.Tensor): vector2 = torch.tensor(vector2)
-    if vector1.shape[0] == 0: return 1
-    if vector2.shape[0] == 0: return 0.6
     # print(vector1.shape, vector2.shape)
     cos_score = util.cos_sim(vector1, vector2).numpy()
     scores = [np.max(cos_score[i, :], keepdims=False) for i in range(cos_score.shape[0])]
     if method == 'mean':
         multi_score = np.mean(scores)
-    else:
+    elif method == 'max':
+        multi_score = np.max(scores)
+    else: # sum
         multi_score = np.dot(scores, [1] * len(scores))
     return multi_score
 
 def get_max_edu_level(sentence, level_json):
+    if len(sentence) == 0: return 0
     level = [level_json[edu] for edu in sentence]
     return np.max(level, keepdims=False)
 
@@ -124,14 +126,27 @@ def show_base_info(base_dict, index):
 def base_object_encode(info_id, info_dict: dict):
     return '。'.join([info_id] + [str(value['sentence']) for _, value in info_dict.items()])
 
+def _record_is_modified(obj_type, obj_id):
+    if obj_type not in modified_obj:
+        modified_obj[obj_type] = []
+    modified_obj[obj_type].append(obj_id)
+
+def info_is_modified(obj_type, obj_id):
+    # print(modified_obj)
+    if obj_type not in modified_obj: return False
+    return obj_id in modified_obj[obj_type]
+
 def check_base_info_item(obj_type, info_id, info_dict):
     item_value = base_object_encode(info_id, info_dict)
     base_info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
     if info_id not in base_info_bak:
+        _record_is_modified(obj_type, info_id)
         return False
     else:
         item_back_value = base_object_encode(info_id, base_info_bak[info_id])
-        return item_back_value == item_value
+        not_modified = (item_back_value == item_value)
+        if not not_modified: _record_is_modified(obj_type, info_id)
+        return not_modified
 
 def get_base_info_item(obj_type, info_id):
     base_info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
@@ -139,7 +154,7 @@ def get_base_info_item(obj_type, info_id):
     return base_info_bak[info_id]
 
 def save_base_info_database(obj_type, data_dict):
-    base_info_bak_file = base_job_info_bak_file if obj_type == 0 else base_hunter_info_bak_file
+    base_info_bak_file = BASE_JOB_INFO_BAK_FILE if obj_type == 0 else BASE_HUNTER_INFO_BAK_FILE
     # print(type(data_dict))
     with open(base_info_bak_file, 'w') as f:
         f.write(json.dumps(data_dict, cls=NpEncoder))
@@ -213,9 +228,9 @@ def get_score_by_multi_id(obj_type, row_key, col_key, score_id):
         print(row_id, col_id)
 
 def save_both_info_map_database():
-    with open(both_info_map_bak_file, 'w') as f:
+    with open(BOTH_INFO_MAP_BAK_FILE, 'w') as f:
         f.write(json.dumps(both_info_map_bak, cls=NpEncoder))
 
 def save_both_score_info_database():
-    with open(both_score_info_bak_file, 'w') as f:
+    with open(BOTH_SCORE_INFO_BAK_FILE, 'w') as f:
         f.write(json.dumps(both_score_info_bak, cls=NpEncoder))

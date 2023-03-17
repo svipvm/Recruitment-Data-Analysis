@@ -29,6 +29,9 @@ base_dict = {
 job_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 hunter_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 
+base_score_for_job = {} # {}
+base_score_for_hunter = {}
+
 
 def encode_base_data(obj, obj_type: int, dict_data: dict):
     # 0: job, 1: hunter
@@ -83,6 +86,7 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
                 encode_result[ojb_id][key]['vector'] = model.encode(encode_result[ojb_id][key]['sentence'])
     else:
         encode_result[ojb_id] = get_base_info_item(obj_type, ojb_id)
+    set_index_by_object_id(obj_type, ojb_id)
 
     dict_data.update(encode_result)
 
@@ -128,14 +132,16 @@ if __name__ == '__main__':
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
     save_base_info_database(0, job_base_dict)
+
     # size = hunter_data.shape[0]
     size = 100
     for index_ in tqdm(range(size)):
         hunter = hunter_data.iloc[index_,:]
         encode_base_data(hunter, 1, hunter_base_dict)
     save_base_info_database(1, hunter_base_dict)
-    
 
+    save_both_info_map_database()
+    
     result = []
     for key1, job_item in job_base_dict.items():
         part_result = []
@@ -153,3 +159,5 @@ if __name__ == '__main__':
             show_base_info(hunter_base_dict, iny),
             '\nscore:',
             result[inx][iny])
+
+

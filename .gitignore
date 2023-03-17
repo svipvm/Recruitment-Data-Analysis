@@ -1,3 +1,5 @@
 record/*
 *.rar
 *.json
+__pycache__
+*.pyc

@@ -16,13 +16,21 @@ try:
 except:
     base_job_info_bak = {}
 
+base_hunter_info_bak_file = 'database/base_hunter_info.json'
 try:
-    base_hunter_info_bak_file = 'database/base_hunter_info.json'
     with open(base_hunter_info_bak_file, 'r') as f:
         base_hunter_info_bak = f.read()
         base_hunter_info_bak = json.loads(base_hunter_info_bak)
 except:
     base_hunter_info_bak = {}
+
+both_info_map_bak_file = 'database/both_info_map.json'
+try:
+    with open(both_info_map_bak_file, 'r') as f:
+        both_info_map_bak = f.read()
+        both_info_map_bak = json.loads(both_info_map_bak)
+except:
+    both_info_map_bak = {}
 
 model_path = '/home/vmice/projects/sbert-base-chinese-nli'
 model = SentenceTransformer(model_path)
@@ -129,3 +137,21 @@ def save_base_info_database(obj_type, data_dict):
     # print(type(data_dict))
     with open(base_info_bak_file, 'w') as f:
         f.write(json.dumps(data_dict, cls=NpEncoder))
+
+def get_index_by_object_id(obj_type, obj_id):
+    obj_name = 'job' if obj_type == 0 else 'hunters'
+    if obj_id in both_info_map_bak[obj_name]:
+        return both_info_map_bak[obj_name][obj_id]
+    else:
+        return -1
+    
+def set_index_by_object_id(obj_type, obj_id):
+    obj_name = 'job' if obj_type == 0 else 'hunters'
+    if obj_name not in both_info_map_bak:
+        both_info_map_bak[obj_name] = {}
+    if obj_id not in both_info_map_bak[obj_name]:
+        both_info_map_bak[obj_name][obj_id] = len(both_info_map_bak[obj_name])
+
+def save_both_info_map_database():
+    with open(both_info_map_bak_file, 'w') as f:
+        f.write(json.dumps(both_info_map_bak, cls=NpEncoder))

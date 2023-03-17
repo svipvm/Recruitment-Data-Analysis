@@ -3,10 +3,10 @@ import cpca, re, json, torch
 import numpy as np
 import pandas as pd
 
-job_csv_file = 'datasets/recruitment-info.csv'
-hunter_csv_file = 'datasets/hunter-info.csv'
-job_data = pd.read_csv(job_csv_file, encoding='GBK')
-hunter_data = pd.read_csv(hunter_csv_file, encoding='GBK')
+JOB_CSV_FILE = 'datasets/recruitment-info.csv'
+HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
+job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
+hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
 
 BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
 try:
@@ -53,32 +53,67 @@ class NpEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 def get_model():
+    '''
+    Returns: result model example
+    '''
     return model
 
 def get_both_data():
+    '''
+    Returns: result job and hunter data
+    '''
     return job_data, hunter_data
 
 def multi_index_to_one(item_list):
+    '''
+    Multiple objects are converted into a list
+
+    Args:
+        - item_list: Multiple objects to store
+    Returns: The converted list
+    '''
     if isinstance(item_list, str):
         return [item_list]
     result = None
     for item in item_list:
-        if not result:
-            result = eval(item) 
-            result += eval(item)
+        if not result: result = eval(item) 
+        else: result += eval(item)
     return result
 
 def try_to_eval(item):
+    '''
+    Try to convert item to a list
+
+    Args:
+        - item: A item will be convert
+    Returns: The converted list
+    '''
     try:
         return eval(item)
     except:
         return [item]
     
 def change_wage(min_wage, max_wage, wage_kind=1):
+    '''
+    Transfer salary to monthly salary
+
+    Args:
+        - min_wage: Minimum wage for a specified salary type
+        - max_wage: Maximum wage for a specified salary type
+        - wage_kind: A salary type. 2 is the daily wage, 1 is the monthly salary, and 0 is the annual salary
+    Returns: A monthly salary
+    '''
     return [min_wage // 12, max_wage // 12] if wage_kind == 0 \
         else ([min_wage * 30, max_wage * 30] if wage_kind == 2 else [min_wage, max_wage])
 
 def change_addrs(addrs):
+    '''
+    Extract the address from the text list
+
+    Args: 
+        - addrs: A text list containing address information
+    Returns: Contains the address of the province or city
+    '''
     if not isinstance(addrs, list): addrs = [addrs]
     province, city = None, None
     # print(addrs)
@@ -90,18 +125,48 @@ def change_addrs(addrs):
     return (str(province) + str(city)).replace('None', '').replace('市县', '市')
 
 def change_edus(edus):
+    '''
+    Extract qualifications from educational experience
+
+    Args: 
+        - edus: A test list containing educational experience
+    Returns: Educational list
+    '''
     return [re.findall(r'\[(.*)\]', edu)[0] for edu in edus]
 
 def delete_same_elem(list_like):
+    '''
+    Remove the same element from the list
+
+    Args: 
+        - list_like: The list to deweight
+    Returns: List after deweighting
+    '''
     return np.unique(np.array(list_like)).tolist()
 
 def change_years(years):
+    '''
+    Extract the number of years from text information containing the year
+
+    Args:
+        - years: a test list containing the year
+    Returns:  List containg the number of years
+    '''
     years = re.findall(r'(\d+)', years)
     years = [int(year) for year in years]
     if len(years) == 0: years = [0]
     return years
 
 def every_multi_score(vector1, vector2, method='mean'):
+    '''
+    The influence of vector2 on it is measured from the perspective of vector1
+
+    Args:
+        - vector1: Main vector
+        - vector2: Vice vector
+        - method: The type of the influence
+    Returns: A score of the degree of impact
+    '''
     if not isinstance(vector1, torch.Tensor): vector1 = torch.tensor(vector1)
     if not isinstance(vector2, torch.Tensor): vector2 = torch.tensor(vector2)
     # print(vector1.shape, vector2.shape)
@@ -116,50 +181,123 @@ def every_multi_score(vector1, vector2, method='mean'):
     return multi_score
 
 def get_max_edu_level(sentence, level_json):
+    '''
+    Extract the largest degree level from the degree list
+
+    Args:
+        - sentence: A degree list
+        - level_json: Mapping from education to level
+    Returns: Maximum degree grade
+    '''
     if len(sentence) == 0: return 0
     level = [level_json[edu] for edu in sentence]
     return np.max(level, keepdims=False)
 
 def show_base_info(base_dict, index):
+    '''
+    Outputs the body information of an object
+
+    Args:
+        - base_dict: Main information map
+        - index: Index of the output information
+    Returns: Returns information that does not contain the primary key
+    '''
     return '。'.join([str(value['sentence']) for _, value in base_dict[list(base_dict.keys())[index]].items()])
 
 def base_object_encode(info_id, info_dict: dict):
+    '''
+    Outputs the all information of an object
+
+    Args:
+        - info_id: A id of a object
+        - info_dict: Content information map
+    Returns: Returns information that contain the primary key
+    '''
     return '。'.join([info_id] + [str(value['sentence']) for _, value in info_dict.items()])
 
 def _record_is_modified(obj_type, obj_id):
+    '''
+    Records the modified object key
+
+    Args:
+        - obj_type: The type of object in which the information is being recorded
+        - obj_id: The id of the object of the corresponding type
+    Returns: None
+    '''
     if obj_type not in modified_obj:
         modified_obj[obj_type] = []
     modified_obj[obj_type].append(obj_id)
 
 def info_is_modified(obj_type, obj_id):
+    '''
+    Determines whether the object has been modified
+
+    Args:
+        - obj_type: The type of object
+        - obj_id: The id of the object
+    Returns: Modified is true, otherwise false
+    '''
     # print(modified_obj)
     if obj_type not in modified_obj: return False
     return obj_id in modified_obj[obj_type]
 
-def check_base_info_item(obj_type, info_id, info_dict):
+def is_modified_base_info_item(obj_type, info_id, info_dict):
+    '''
+    Update the information if it has been modified
+
+    Args:
+        - obj_type: The type of object
+        - info_id: The id of the object
+        - info_dict: The information of the object
+    Returns: Modified is false, otherwise true
+    '''
     item_value = base_object_encode(info_id, info_dict)
     base_info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
     if info_id not in base_info_bak:
         _record_is_modified(obj_type, info_id)
-        return False
+        return True
     else:
-        item_back_value = base_object_encode(info_id, base_info_bak[info_id])
-        not_modified = (item_back_value == item_value)
-        if not not_modified: _record_is_modified(obj_type, info_id)
-        return not_modified
+        item_bak_value = base_object_encode(info_id, base_info_bak[info_id])
+        modified = (item_bak_value != item_value)
+        if modified: _record_is_modified(obj_type, info_id)
+        return modified
 
 def get_base_info_item(obj_type, info_id):
+    '''
+    Get object information from the backup system
+
+    Args:
+        - obj_type: The type of object
+        - info_id: The id of the object
+    Returns: The object information recorded in the backup system
+    '''
     base_info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
     assert info_id in base_info_bak
     return base_info_bak[info_id]
 
 def save_base_info_database(obj_type, data_dict):
+    '''
+    Update object information in the backup system
+
+    Args:
+        - obj_type: The type of object
+        - data_dict: Information about the object to save
+    Returns: None
+    '''
     base_info_bak_file = BASE_JOB_INFO_BAK_FILE if obj_type == 0 else BASE_HUNTER_INFO_BAK_FILE
     # print(type(data_dict))
     with open(base_info_bak_file, 'w') as f:
         f.write(json.dumps(data_dict, cls=NpEncoder))
 
 def get_index_by_object_id(obj_type, obj_id):
+    '''
+    Gets the index of the object key from the backup system
+
+    Args:
+        - obj_type: The type of object
+        - obj_id: The id(key) of object
+    Returns: Returns the corresponding index if the object exists, otherwise -1
+    '''
     obj_name = 'job' if obj_type == 0 else 'hunters'
     if obj_id in both_info_map_bak[obj_name]:
         return both_info_map_bak[obj_name][obj_id]
@@ -167,6 +305,14 @@ def get_index_by_object_id(obj_type, obj_id):
         return -1
     
 def set_index_by_object_id(obj_type, obj_id):
+    '''
+    Objects that are not in the backup system index information added to the backup system
+
+    Args:
+        - obj_type: The type of object
+        - obj_id: The id of object
+    Returns: None
+    '''
     obj_name = 'job' if obj_type == 0 else 'hunters'
     if obj_name not in both_info_map_bak:
         both_info_map_bak[obj_name] = {}
@@ -176,9 +322,22 @@ def set_index_by_object_id(obj_type, obj_id):
                                                 len(both_info_map_bak[obj_name]))
 
 def _get_max_index_for_both_info():
+    '''
+    Returns the maximum number of indexes for both classes of objects
+
+    Returns: Maximum number of indexes for both categories
+    '''
     return _max_index_for_both_info
 
 def _expand_score_database_by_obj_type(obj_type):
+    '''
+    Extend the number of information in the relational matrix.
+    Extend the main index (x) and vice index (y), which are relative to obj_type
+
+    Args:
+        - obj_type: The type of object
+    Returns: None
+    '''
     num_job, num_hunter = _get_max_index_for_both_info()
     max_inx, max_iny = (num_job, num_hunter) if obj_type == 0 else (num_hunter, num_job)
     obj_name = 'job' if obj_type == 0 else 'hunters'
@@ -205,10 +364,24 @@ def _expand_score_database_by_obj_type(obj_type):
             ))
 
 def expand_score_database():
+    '''
+    Extend the data for both types of objects separately
+    '''
     _expand_score_database_by_obj_type(0)
     _expand_score_database_by_obj_type(1)
 
 def set_score_by_multi_id(obj_type, row_key, col_key, score_id, score):
+    '''
+    Update the score information in the backup system
+
+    Args:
+        - obj_type: The type of main object
+        - row_key: The key of main object
+        - col_key: The key of vice object
+        - score_id: The type of object
+        - score: The score to store
+    Returns: None
+    '''
     obj_name = 'job' if obj_type == 0 else 'hunters'
     row_id = get_index_by_object_id(obj_type, row_key)
     col_id = get_index_by_object_id(obj_type ^ 1, col_key)
@@ -219,6 +392,16 @@ def set_score_by_multi_id(obj_type, row_key, col_key, score_id, score):
         print(row_id, col_id)
 
 def get_score_by_multi_id(obj_type, row_key, col_key, score_id):
+    '''
+    Gets the object score from the backup system
+
+    Args:
+        - obj_type: The type of main object
+        - row_key: The key of main object
+        - col_key: The key of vice object
+        - score_id: The type of object
+    Returns: Scores in the corresponding backup system
+    '''
     obj_name = 'job' if obj_type == 0 else 'hunters'
     row_id = get_index_by_object_id(obj_type, row_key)
     col_id = get_index_by_object_id(obj_type ^ 1, col_key)
@@ -228,9 +411,15 @@ def get_score_by_multi_id(obj_type, row_key, col_key, score_id):
         print(row_id, col_id)
 
 def save_both_info_map_database():
+    '''
+    Update object index information in the backup system
+    '''
     with open(BOTH_INFO_MAP_BAK_FILE, 'w') as f:
         f.write(json.dumps(both_info_map_bak, cls=NpEncoder))
 
 def save_both_score_info_database():
+    '''
+    Update object score information in the backup system
+    '''
     with open(BOTH_SCORE_INFO_BAK_FILE, 'w') as f:
         f.write(json.dumps(both_score_info_bak, cls=NpEncoder))

@@ -80,7 +80,7 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
             print(key, e)
         
     # print(base_object_encode(ojb_id, encode_result[ojb_id]))
-    if not check_base_info_item(obj_type, ojb_id, encode_result[ojb_id]):
+    if is_modified_base_info_item(obj_type, ojb_id, encode_result[ojb_id]):
         for key, value in base_dict.items():
             if key in with_encode_items:
                 encode_result[ojb_id][key]['vector'] = model.encode(encode_result[ojb_id][key]['sentence'])

@@ -9,6 +9,7 @@ HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
 # hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
 # job_data, hunter_data = get_both_data()
 
+# todo: convert json to pickle
 BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
 try:
     with open(BASE_JOB_INFO_BAK_FILE, 'r') as f:
@@ -36,6 +37,20 @@ try:
         main_hunter_info_bak = json.loads(f.read())
 except:
     main_hunter_info_bak = {}
+
+EXTRA_JOB_INFO_BAK_FILE = 'database/extra_job_info.json'
+try:
+    with open(EXTRA_JOB_INFO_BAK_FILE, 'r') as f:
+        extra_job_info_bak = json.loads(f.read())
+except:
+    extra_job_info_bak = {}
+
+EXTRA_HUNTER_INFO_BAK_FILE = 'database/extra_hunter_info.json'
+try:
+    with open(EXTRA_HUNTER_INFO_BAK_FILE, 'r') as f:
+        extra_hunter_info_bak = json.loads(f.read())
+except:
+    extra_hunter_info_bak = {}
 
 BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map.json'
 try:
@@ -74,12 +89,13 @@ def get_model(data_name):
     Returns: result model example
     '''
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-    if data_name == 'base':
-        return SentenceTransformer(BASE_MODEL_PATH)
+    if data_name == 'base' or data_name == 'extra':
+        return SentenceTransformer(BASE_MODEL_PATH, device=device)
     elif data_name == 'main':
-        return SentenceTransformer(BASE_MODEL_PATH)
+        return SentenceTransformer(BASE_MODEL_PATH, device=device)
+    else:
+        return None
     
-    # return model
 
 def _get_both_data():
     '''
@@ -327,6 +343,8 @@ def save_info_database(data_name, obj_type, data_dict):
         info_bak_file = BASE_JOB_INFO_BAK_FILE if obj_type == 0 else BASE_HUNTER_INFO_BAK_FILE
     elif data_name == 'main':
         info_bak_file = MAIN_JOB_INFO_BAK_FILE if obj_type == 0 else MAIN_HUNTER_INFO_BAK_FILE
+    elif data_name == 'extra':
+        info_bak_file = EXTRA_JOB_INFO_BAK_FILE if obj_type == 0 else EXTRA_HUNTER_INFO_BAK_FILE
     # print(type(data_dict))
     with open(info_bak_file, 'w') as f:
         f.write(json.dumps(data_dict, cls=NpEncoder))

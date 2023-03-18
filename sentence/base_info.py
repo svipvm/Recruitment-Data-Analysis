@@ -53,8 +53,8 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
             sentence = obj[value].values.tolist()
             
             if key == 'id':
-                ojb_id = str(sentence[0])
-                encode_result[ojb_id] = {}
+                obj_id = str(sentence[0])
+                encode_result[obj_id] = {}
             elif key == 'pos_name':
                 sentence = try_to_eval(sentence[0])
                 sentence = [word.replace('实习生', '') for word in sentence]
@@ -83,20 +83,20 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
                 sentence = multi_index_to_one(sentence)
             
             if key != 'id':
-                encode_result[ojb_id][key] = {}
-                encode_result[ojb_id][key]['sentence'] = sentence 
+                encode_result[obj_id][key] = {}
+                encode_result[obj_id][key]['sentence'] = sentence 
                     
         except Exception as e:
             print(key, e)
         
     # print(base_object_encode(ojb_id, encode_result[ojb_id]))
-    if is_modified_info_item('base', obj_type, ojb_id, encode_result[ojb_id]):
+    if is_modified_info_item('base', obj_type, obj_id, encode_result[obj_id]):
         for key, value in base_dict.items():
             if key in WITH_ENCODE_ITEMS:
-                encode_result[ojb_id][key]['vector'] = model.encode(encode_result[ojb_id][key]['sentence'])
+                encode_result[obj_id][key]['vector'] = model.encode(encode_result[obj_id][key]['sentence'])
     else:
-        encode_result[ojb_id] = get_info_item('base', obj_type, ojb_id)
-    set_index_by_object_id(obj_type, ojb_id)
+        encode_result[obj_id] = get_info_item('base', obj_type, obj_id)
+    set_index_by_object_id(obj_type, obj_id)
 
     dict_data.update(encode_result)
 

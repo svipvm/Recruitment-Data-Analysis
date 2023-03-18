@@ -1,6 +1,4 @@
-from sentence_transformers import SentenceTransformer
-import jieba, nltk, re, cpca, torch, sys, psutil, os, time
-import pandas as pd
+import re, time
 import numpy as np
 # sys.path.append('sentence')
 from database_util import *
@@ -10,10 +8,11 @@ require_kind_json = { 0: '实习', 1: '不限', 2: '全职'} # self to fill
 require_edu_json = { 0: '不限', 1: '技工', 2: '大专', 3: '本科', 4: '硕士', 5: '博士'}
 level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
 require_edu_re_json = {'不限': 0, '技工': 1, '大专': 2, '本科': 3, '硕士': 4, '博士': 5}
-with_encode_items = ['pos_name', 'pos_keys', 'skill_keys']
+WITH_ENCODE_ITEMS = ['pos_name', 'pos_keys', 'skill_keys']
 
-model = get_model()
-job_data, hunter_data = get_both_data()
+# DEBUG = True
+# if DEBUG:
+#     job_data, hunter_data = get_both_data()
 
 base_dict = {
     'id': (['job_id'], ['hunter_id']),
@@ -29,14 +28,25 @@ base_dict = {
 job_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 hunter_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 
-base_score_for_job = {} # {}
-base_score_for_hunter = {}
+# base_score_for_job = {} # {}
+# base_score_for_hunter = {}
+model = get_model('base')
 
 
 def encode_base_data(obj, obj_type: int, dict_data: dict):
-    # 0: job, 1: hunter
+    '''
+    Read information from the backup database into the dictionary
+
+    Args:
+        - obj: The framedata object to be extracted
+        - obj_type: The type of the object
+        - dict_data: Dictionary to store
+    Returns: None
+    '''
     assert obj_type == 0 or obj_type == 1
-    encode_result = {}
+
+    # {id: {sentence: ...}, pos_name: {sentence: ..., vector: ...}, ...}
+    encode_result = {} 
     for key, value in base_dict.items():
         value = value[obj_type]
         try:
@@ -80,24 +90,33 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
             print(key, e)
         
     # print(base_object_encode(ojb_id, encode_result[ojb_id]))
-    if is_modified_base_info_item(obj_type, ojb_id, encode_result[ojb_id]):
+    if is_modified_info_item('base', obj_type, ojb_id, encode_result[ojb_id]):
         for key, value in base_dict.items():
-            if key in with_encode_items:
+            if key in WITH_ENCODE_ITEMS:
                 encode_result[ojb_id][key]['vector'] = model.encode(encode_result[ojb_id][key]['sentence'])
     else:
-        encode_result[ojb_id] = get_base_info_item(obj_type, ojb_id)
+        encode_result[ojb_id] = get_info_item('base', obj_type, ojb_id)
     set_index_by_object_id(obj_type, ojb_id)
 
     dict_data.update(encode_result)
 
 
 def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
+    '''
+    From the point of view of the main object, calculate the basic score of the vice object
+
+    Args:
+        - obj_type: The type of the main object
+        - main_obj: main object
+        - vice_obj: vice object
+    Returns: The basic score
+    '''
     base_score = 1.0
     for key, main_item in main_obj.items():
         vice_item = vice_obj[key]
-        
         sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
-        if key in with_encode_items:
+
+        if key in WITH_ENCODE_ITEMS:
             vector1, vector2 = main_item['vector'], vice_item['vector']
             if obj_type == 0:
                 if len(vector1) == 0: score = 1
@@ -145,14 +164,14 @@ if __name__ == '__main__':
     for index_ in tqdm(range(size)):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
-    save_base_info_database(0, job_base_dict)
+    save_info_database('base', 0, job_base_dict)
 
     # size = hunter_data.shape[0]
     size = 100
     for index_ in tqdm(range(size)):
         hunter = hunter_data.iloc[index_,:]
         encode_base_data(hunter, 1, hunter_base_dict)
-    save_base_info_database(1, hunter_base_dict)
+    save_info_database('base', 1, hunter_base_dict)
 
     save_both_info_map_database()
 

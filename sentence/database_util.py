@@ -5,8 +5,9 @@ import pandas as pd
 
 JOB_CSV_FILE = 'datasets/recruitment-info.csv'
 HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
-job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
-hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
+# job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
+# hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
+# job_data, hunter_data = get_both_data()
 
 BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
 try:
@@ -21,6 +22,20 @@ try:
         base_hunter_info_bak = json.loads(f.read())
 except:
     base_hunter_info_bak = {}
+
+MAIN_JOB_INFO_BAK_FILE = 'database/main_job_info.json'
+try:
+    with open(MAIN_JOB_INFO_BAK_FILE, 'r') as f:
+        main_job_info_bak = json.loads(f.read())
+except:
+    main_job_info_bak = {}
+
+MAIN_HUNTER_INFO_BAK_FILE = 'database/main_hunter_info.json'
+try:
+    with open(MAIN_HUNTER_INFO_BAK_FILE, 'r') as f:
+        main_hunter_info_bak = json.loads(f.read())
+except:
+    main_hunter_info_bak = {}
 
 BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map.json'
 try:
@@ -39,8 +54,8 @@ except:
 # exists_obj_id = {}
 modified_obj = {}
 
-MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
-model = SentenceTransformer(MODEL_PATH)
+BASE_MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
+# model = SentenceTransformer(BASE_MODEL_PATH)
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -52,33 +67,29 @@ class NpEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
 
-def get_model():
+def get_model(data_name):
     '''
+    Args:
+        - data_name: One of them base, main and extra
     Returns: result model example
     '''
-    return model
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    if data_name == 'base':
+        return SentenceTransformer(BASE_MODEL_PATH)
+    elif data_name == 'main':
+        return SentenceTransformer(BASE_MODEL_PATH)
+    
+    # return model
 
-def get_both_data():
+def _get_both_data():
     '''
     Returns: result job and hunter data
     '''
+    job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
+    hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
     return job_data, hunter_data
 
-def multi_index_to_one(item_list):
-    '''
-    Multiple objects are converted into a list
-
-    Args:
-        - item_list: Multiple objects to store
-    Returns: The converted list
-    '''
-    if isinstance(item_list, str):
-        return [item_list]
-    result = None
-    for item in item_list:
-        if not result: result = eval(item) 
-        else: result += eval(item)
-    return result
+job_data, hunter_data = _get_both_data()
 
 def try_to_eval(item):
     '''
@@ -89,10 +100,27 @@ def try_to_eval(item):
     Returns: The converted list
     '''
     try:
-        return eval(item)
+        items = eval(item)
+        return [str(item) for item in items]
     except:
-        return [item]
+        return [str(item)]
     
+def multi_index_to_one(item_list):
+    '''
+    Multiple objects are converted into a list
+
+    Args:
+        - item_list: Multiple objects to store
+    Returns: The converted list
+    '''
+    if not isinstance(item_list, list):
+        return [str(item_list)]
+    result = None
+    for item in item_list:
+        if not result: result = try_to_eval(item) 
+        else: result += try_to_eval(item)
+    return result
+
 def change_wage(min_wage, max_wage, wage_kind=1):
     '''
     Transfer salary to monthly salary
@@ -204,7 +232,7 @@ def show_base_info(base_dict, index):
     '''
     return '。'.join([str(value['sentence']) for _, value in base_dict[list(base_dict.keys())[index]].items()])
 
-def base_object_encode(info_id, info_dict: dict):
+def _dict_object_encode(info_id, info_dict: dict):
     '''
     Outputs the all information of an object
 
@@ -241,7 +269,7 @@ def info_is_modified(obj_type, obj_id):
     if obj_type not in modified_obj: return False
     return obj_id in modified_obj[obj_type]
 
-def is_modified_base_info_item(obj_type, info_id, info_dict):
+def is_modified_info_item(data_name, obj_type, info_id, info_dict):
     '''
     Update the information if it has been modified
 
@@ -251,18 +279,22 @@ def is_modified_base_info_item(obj_type, info_id, info_dict):
         - info_dict: The information of the object
     Returns: Modified is false, otherwise true
     '''
-    item_value = base_object_encode(info_id, info_dict)
-    base_info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
-    if info_id not in base_info_bak:
+    if data_name == 'base':
+        info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
+    elif data_name == 'main':
+        info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
+
+    if info_id not in info_bak:
         _record_is_modified(obj_type, info_id)
         return True
     else:
-        item_bak_value = base_object_encode(info_id, base_info_bak[info_id])
+        item_value = _dict_object_encode(info_id, info_dict)
+        item_bak_value = _dict_object_encode(info_id, info_bak[info_id])
         modified = (item_bak_value != item_value)
         if modified: _record_is_modified(obj_type, info_id)
         return modified
 
-def get_base_info_item(obj_type, info_id):
+def get_info_item(data_name, obj_type, info_id):
     '''
     Get object information from the backup system
 
@@ -271,11 +303,15 @@ def get_base_info_item(obj_type, info_id):
         - info_id: The id of the object
     Returns: The object information recorded in the backup system
     '''
-    base_info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
-    assert info_id in base_info_bak
-    return base_info_bak[info_id]
+    # info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
+    if data_name == 'base':
+        info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
+    elif data_name == 'main':
+        info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
+    assert info_id in info_bak
+    return info_bak[info_id]
 
-def save_base_info_database(obj_type, data_dict):
+def save_info_database(data_name, obj_type, data_dict):
     '''
     Update object information in the backup system
 
@@ -284,9 +320,12 @@ def save_base_info_database(obj_type, data_dict):
         - data_dict: Information about the object to save
     Returns: None
     '''
-    base_info_bak_file = BASE_JOB_INFO_BAK_FILE if obj_type == 0 else BASE_HUNTER_INFO_BAK_FILE
+    if data_name == 'base':
+        info_bak_file = BASE_JOB_INFO_BAK_FILE if obj_type == 0 else BASE_HUNTER_INFO_BAK_FILE
+    elif data_name == 'main':
+        info_bak_file = MAIN_JOB_INFO_BAK_FILE if obj_type == 0 else MAIN_HUNTER_INFO_BAK_FILE
     # print(type(data_dict))
-    with open(base_info_bak_file, 'w') as f:
+    with open(info_bak_file, 'w') as f:
         f.write(json.dumps(data_dict, cls=NpEncoder))
 
 def get_index_by_object_id(obj_type, obj_id):
@@ -423,3 +462,31 @@ def save_both_score_info_database():
     '''
     with open(BOTH_SCORE_INFO_BAK_FILE, 'w') as f:
         f.write(json.dumps(both_score_info_bak, cls=NpEncoder))
+
+def parse_long_text_list(text_list):
+    WORD_THRESHOLD = 10
+    pre_delete_patterns = [r'【\w*】']
+    split_patterns = [r'\d+\.', r'\d+、', r'（\d+）', r'\(\d+\)']
+    post_delete_patterns = [r'。\w+', r'；\w+', r'^(\w+){1,4}：', r'^\w+\[\w+\]\:', r'^\w+：']
+    # split_word = ['；', '。']
+    result = []
+
+    for text in text_list:
+        # print(text)
+        for pattern in pre_delete_patterns:
+            text = re.compile(pattern).sub('', text)
+        # print(text)
+        for pattern in split_patterns:
+            text = re.compile(pattern).sub('$~$', text)
+        # for pattern in post_delete_patterns:
+        #     text = re.compile(pattern).sub('。', text)
+        
+        # for word in texts:
+        #     part_result += [w for w in word.split(split_word[1]) if len(w) > 2]
+        part_result = [w for w in text.split('$~$') if len(w) > WORD_THRESHOLD]
+        for part_text in part_result:
+            for pattern in post_delete_patterns:
+                part_text = re.compile(pattern).sub('', part_text)
+            result.append(part_text)
+        
+    return result

@@ -204,6 +204,9 @@ def every_multi_score(vector1, vector2, method='mean'):
         multi_score = np.mean(scores)
     elif method == 'max':
         multi_score = np.max(scores)
+    elif method == 'k-mean':
+        k_rate = int(np.ceil(len(scores) * 0.3))
+        multi_score = np.mean(np.sort(scores)[-k_rate:])
     else: # sum
         multi_score = np.dot(scores, [1] * len(scores))
     return multi_score

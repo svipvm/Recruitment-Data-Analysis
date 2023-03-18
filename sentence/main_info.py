@@ -65,10 +65,38 @@ def encode_main_data(obj, obj_type: int, dict_data: dict):
 
     dict_data.update(encode_result)
 
+
+def calc_main_score(obj_type: int, main_obj: dict, vice_obj: dict):
+    '''
+    From the point of view of the main object, calculate the main score of the vice object
+
+    Args:
+        - obj_type: The type of the main object
+        - main_obj: main object
+        - vice_obj: vice object
+    Returns: The main score
+    '''
+    main_score = 1.0
+    for key, main_item in main_obj.items():
+        vice_item = vice_obj[key]
+        sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
+
+        if key in WITH_ENCODE_ITEMS:
+            vector1, vector2 = main_item['vector'], vice_item['vector']
+            if obj_type == 0: 
+                if len(vector1) == 0 or len(vector2) == 0: score = 0.1
+                else: score = every_multi_score(vector1, vector2, 'mean')
+            else:
+                if len(vector1) == 0 or len(vector2) == 0: score = 0.1
+                else: score = every_multi_score(vector1, vector2, 'k-mean')
+        main_score *= score
+
+    return main_score
+
 if __name__ == '__main__':
     start_time = time.time()
     # size = job_data.shape[0]
-    size = 100
+    size = 15
     for index_ in tqdm(range(size)):
         job = job_data.iloc[index_,:]
         encode_main_data(job, 0, job_main_dict)
@@ -76,9 +104,69 @@ if __name__ == '__main__':
     save_info_database('main', 0, job_main_dict)
 
     # size = job_data.shape[1]
-    size = 100
+    size = 15
     for index_ in tqdm(range(size)):
         hunter = hunter_data.iloc[index_,:]
         encode_main_data(hunter, 1, hunter_main_dict)
         # break
     save_info_database('main', 1, hunter_main_dict)
+
+    save_both_info_map_database() # only one
+    expand_score_database() # only one
+
+    result = []
+    for key1, job_item in job_main_dict.items():
+        part_result = []
+        valid_job = info_is_modified(0, key1)
+        for key2, hunter_item in hunter_main_dict.items():
+            # print(job_item, hunter_item)
+            valid_hunter = info_is_modified(1, key2)
+            if valid_job or valid_hunter:
+                main_score = calc_main_score(0, job_item, hunter_item)
+                # print(key1, key2, base_score)
+                set_score_by_multi_id(0, key1, key2, 1, main_score)
+            else:
+                main_score = get_score_by_multi_id(0, key1, key2, 1)
+            part_result.append(main_score)
+                
+        #     break
+        result.append(part_result)
+
+    # for inx, (job_id, job_info) in enumerate(job_main_dict.items()):
+    #     # for _, (hunter_id, hunter_info) in enumerate(hunter_base_dict.items()):
+    #     iny = np.argmax(result, axis=1)[inx]
+    #     print(show_base_info(job_main_dict, inx),
+    #         '\n',
+    #         show_base_info(hunter_main_dict, iny),
+    #         '\nscore:',
+    #         result[inx][iny])
+        
+    result = []
+    for key1, hunter_item in hunter_main_dict.items():
+        part_result = []
+        valid_hunter = info_is_modified(1, key1)
+        for key2, job_item in job_main_dict.items():
+            # print(job_item, hunter_item)
+            valid_job = info_is_modified(0, key2)
+            if valid_job or valid_hunter:
+                main_score = calc_main_score(1, hunter_item, job_item)
+                # print(key1, key2, base_score)
+                set_score_by_multi_id(1, key1, key2, 1, main_score)
+            else:
+                main_score = get_score_by_multi_id(1, key1, key2, 1)
+            part_result.append(main_score)
+    #     #     break
+        result.append(part_result)
+    
+    # for inx, (hutner_id, hunter_info) in enumerate(hunter_main_dict.items()):
+    #     # for _, (hunter_id, hunter_info) in enumerate(hunter_base_dict.items()):
+    #     iny = np.argmax(result, axis=1)[inx]
+    #     print(show_base_info(job_main_dict, iny),
+    #         '\n',
+    #         show_base_info(hunter_main_dict, inx),
+    #         '\nscore:',
+    #         result[inx][iny])
+
+    save_both_score_info_database() # only one
+
+    print('times:', time.time() - start_time)

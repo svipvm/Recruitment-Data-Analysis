@@ -302,6 +302,8 @@ def is_modified_info_item(data_name, obj_type, info_id, info_dict):
         info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
     elif data_name == 'main':
         info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
+    elif data_name == 'extra':
+        info_bak = extra_job_info_bak if obj_type == 0 else extra_hunter_info_bak
 
     if info_id not in info_bak:
         _record_is_modified(obj_type, info_id)
@@ -327,6 +329,9 @@ def get_info_item(data_name, obj_type, info_id):
         info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
     elif data_name == 'main':
         info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
+    elif data_name == 'extra':
+        info_bak = extra_job_info_bak if obj_type == 0 else extra_hunter_info_bak
+
     assert info_id in info_bak
     return info_bak[info_id]
 

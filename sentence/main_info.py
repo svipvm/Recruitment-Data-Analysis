@@ -15,7 +15,7 @@ main_dict = {
 job_main_dict = {} # id_key: {sentence: ..., vector: ..., }
 hunter_main_dict = {} # id_key: {sentence: ..., vector: ..., }
 
-model = get_model('main')
+main_model = get_model('main')
 
 def encode_main_data(obj, obj_type: int, dict_data: dict):
     '''
@@ -58,7 +58,7 @@ def encode_main_data(obj, obj_type: int, dict_data: dict):
     if is_modified_info_item('main', obj_type, obj_id, encode_result[obj_id]):
         for key, value in main_dict.items():
             if key in WITH_ENCODE_ITEMS:
-                encode_result[obj_id][key]['vector'] = model.encode(encode_result[obj_id][key]['sentence'])
+                encode_result[obj_id][key]['vector'] = main_model.encode(encode_result[obj_id][key]['sentence'])
     else:
         encode_result[obj_id] = get_info_item('main', obj_type, obj_id)
     set_index_by_object_id(obj_type, obj_id)

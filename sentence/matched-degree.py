@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
     save_both_info_map_database()
     expand_score_database()
+    # print(len(main_job_info_bak))
     
     result = []
     for key1, job_item in job_base_dict.items():
@@ -150,17 +151,41 @@ if __name__ == '__main__':
     # ===================================== End: Main Score =====================================
 
     # =================================== Begin: Extra Score ====================================
-    # for index_ in tqdm(range(size), desc='Job-Extra-Info'):
-    #     job = job_data.iloc[index_,:]
-    #     encode_extra_data(job, 0, job_extra_dict)
-    #     # break
-    # save_info_database('extra', 0, job_extra_dict)
+    for index_ in tqdm(range(size), desc='Job-Extra-Info'):
+        job = job_data.iloc[index_,:]
+        encode_extra_data(job, 0, job_extra_dict)
+        # break
+    save_info_database('extra', 0, job_extra_dict)
 
     for index_ in tqdm(range(size), desc='Hunter-Extra-Info'):
         hunter = hunter_data.iloc[index_,:]
         encode_extra_data(hunter, 1, hunter_extra_dict)
         # break
     save_info_database('extra', 1, hunter_extra_dict)
+    
+    encode_equal_data()
+    if DEBUG: save_info_database('equal', None, equal_field_dcit)
+
+    result = []
+    for key1, job_item in job_extra_dict.items():
+        part_result = []
+        valid_job = info_is_modified(0, key1)
+        main_sentence, main_vector = get_extra_sentence_and_vector(0, key1)
+        if main_vector is None: main_vector = base_model.encode(main_sentence)
+        for key2, hunter_item in hunter_extra_dict.items():
+            # print(job_item, hunter_item)
+            valid_hunter = info_is_modified(1, key2)
+            if valid_job or valid_hunter:
+                # print(key1, key2, base_score)
+                extra_score = calc_extra_score(0, main_vector, key2, hunter_item)
+                set_score_by_multi_id(0, key1, key2, 2, extra_score)
+            else:
+                extra_score = get_score_by_multi_id(0, key1, key2, 2)
+            part_result.append(extra_score)
+
+        #     break
+        result.append(part_result)
+
     # ==================================== End: Extra Score =====================================
 
     save_both_score_info_database()

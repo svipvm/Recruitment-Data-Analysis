@@ -3,6 +3,8 @@ import cpca, re, json, torch
 import numpy as np
 import pandas as pd
 
+DEBUG = True
+
 require_edu_re_json = {'不限': 0, '技工': 1, '大专': 2, '本科': 3, '硕士': 4, '博士': 5}
 level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
 
@@ -14,61 +16,77 @@ HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
 
 # todo: convert json to pickle
 BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
+base_job_info_bak = {}
 try:
-    with open(BASE_JOB_INFO_BAK_FILE, 'r') as f:
+    with open(BASE_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
         base_job_info_bak = json.loads(f.read())
-except:
-    base_job_info_bak = {}
+    print(BASE_JOB_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(BASE_JOB_INFO_BAK_FILE, 'lost, record again!')
 
 BASE_HUNTER_INFO_BAK_FILE = 'database/base_hunter_info.json'
+base_hunter_info_bak = {}
 try:
-    with open(BASE_HUNTER_INFO_BAK_FILE, 'r') as f:
+    with open(BASE_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
         base_hunter_info_bak = json.loads(f.read())
-except:
-    base_hunter_info_bak = {}
+    print(BASE_HUNTER_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(BASE_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
 MAIN_JOB_INFO_BAK_FILE = 'database/main_job_info.json'
+main_job_info_bak = {}
 try:
-    with open(MAIN_JOB_INFO_BAK_FILE, 'r') as f:
+    with open(MAIN_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
         main_job_info_bak = json.loads(f.read())
-except:
-    main_job_info_bak = {}
+    print(MAIN_JOB_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(MAIN_JOB_INFO_BAK_FILE, 'lost, record again!')
 
 MAIN_HUNTER_INFO_BAK_FILE = 'database/main_hunter_info.json'
+main_hunter_info_bak = {}
 try:
-    with open(MAIN_HUNTER_INFO_BAK_FILE, 'r') as f:
+    with open(MAIN_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
         main_hunter_info_bak = json.loads(f.read())
-except:
-    main_hunter_info_bak = {}
+    print(MAIN_HUNTER_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(MAIN_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
 EXTRA_JOB_INFO_BAK_FILE = 'database/extra_job_info.json'
+extra_job_info_bak = {}
 try:
-    with open(EXTRA_JOB_INFO_BAK_FILE, 'r') as f:
+    with open(EXTRA_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
         extra_job_info_bak = json.loads(f.read())
-except:
-    extra_job_info_bak = {}
+    print(EXTRA_JOB_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(EXTRA_JOB_INFO_BAK_FILE, 'lost, record again!')
 
 EXTRA_HUNTER_INFO_BAK_FILE = 'database/extra_hunter_info.json'
+extra_hunter_info_bak = {}
 try:
-    with open(EXTRA_HUNTER_INFO_BAK_FILE, 'r') as f:
+    with open(EXTRA_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
         extra_hunter_info_bak = json.loads(f.read())
-except:
-    extra_hunter_info_bak = {}
+    print(EXTRA_HUNTER_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(EXTRA_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
 BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map.json'
+both_info_map_bak = {}
 try:
-    with open(BOTH_INFO_MAP_BAK_FILE, 'r') as f:
+    with open(BOTH_INFO_MAP_BAK_FILE, 'r', encoding='GBK') as f:
         both_info_map_bak = json.loads(f.read())
-except:
-    both_info_map_bak = {}
+    print(BOTH_INFO_MAP_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(BOTH_INFO_MAP_BAK_FILE, 'lost, record again!')
 _max_index_for_both_info = [-1, -1]
 
 BOTH_SCORE_INFO_BAK_FILE = 'database/both_score_info.json'
+both_score_info_bak = {}
 try:
-    with open(BOTH_SCORE_INFO_BAK_FILE, 'r') as f:
+    with open(BOTH_SCORE_INFO_BAK_FILE, 'r', encoding='GBK') as f:
         both_score_info_bak = json.loads(f.read())
-except:
-    both_score_info_bak = {}
+    print(BOTH_SCORE_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+except Exception as e:
+    print(BOTH_SCORE_INFO_BAK_FILE, 'lost, record again!')
 # exists_obj_id = {}
 modified_obj = {}
 
@@ -334,7 +352,7 @@ def get_info_item(data_name, obj_type, info_id):
         info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
     elif data_name == 'extra':
         info_bak = extra_job_info_bak if obj_type == 0 else extra_hunter_info_bak
-
+    # print(len(info_bak))
     assert info_id in info_bak
     return info_bak[info_id]
 
@@ -347,15 +365,32 @@ def save_info_database(data_name, obj_type, data_dict):
         - data_dict: Information about the object to save
     Returns: None
     '''
+    global base_job_info_bak, base_hunter_info_bak
+    global main_job_info_bak, main_hunter_info_bak
+    global extra_job_info_bak, extra_hunter_info_bak
+
     if data_name == 'base':
         info_bak_file = BASE_JOB_INFO_BAK_FILE if obj_type == 0 else BASE_HUNTER_INFO_BAK_FILE
+        if obj_type == 0: base_job_info_bak = data_dict
+        else: base_hunter_info_bak = data_dict
+        # info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
     elif data_name == 'main':
         info_bak_file = MAIN_JOB_INFO_BAK_FILE if obj_type == 0 else MAIN_HUNTER_INFO_BAK_FILE
+        # info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
+        if obj_type == 0: main_job_info_bak = data_dict
+        else: main_hunter_info_bak = data_dict
     elif data_name == 'extra':
         info_bak_file = EXTRA_JOB_INFO_BAK_FILE if obj_type == 0 else EXTRA_HUNTER_INFO_BAK_FILE
+        # info_bak = extra_job_info_bak if obj_type == 0 else extra_hunter_info_bak
+        if obj_type == 0: extra_job_info_bak = data_dict
+        else: extra_hunter_info_bak = data_dict
+    elif data_name == 'equal':
+        info_bak_file = 'database/equal_field_info.json'
+        # info_bak = None
     # print(type(data_dict))
     with open(info_bak_file, 'w') as f:
         f.write(json.dumps(data_dict, cls=NpEncoder))
+    # info_bak = data_dict
 
 def get_index_by_object_id(obj_type, obj_id):
     '''
@@ -519,3 +554,18 @@ def parse_long_text_list(text_list):
             result.append(part_text)
         
     return result
+
+def get_extra_sentence_and_vector(obj_type, obj_id):
+    '''
+
+    Args:
+        - obj_type: The type of main object
+    '''
+    # print(obj_id, type(obj_id), obj_id in main_job_info_bak, len(main_job_info_bak))
+    if obj_type == 0:
+        return (main_job_info_bak[obj_id]['require']['sentence'], 
+                main_job_info_bak[obj_id]['require']['vector'])
+    elif obj_type == 1:
+        text = '这属于是好福利，也就是说这属于好处。'
+        return (text, None)
+    

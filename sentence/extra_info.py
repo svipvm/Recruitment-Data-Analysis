@@ -83,6 +83,36 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                         if '全国' in text: grade += 0.5
                         weights.append(grade)
                     # print(weights)
+                elif index_key == 'education_exps':
+                    for idx, text in enumerate(sentence):
+                        sentence[idx] = re.sub(r'^\w+\[\w+\]:', '', text)
+
+                        weight = re.findall(r'^\w+\[(\w+)\]:', text)
+                        if len(weight) != 0: weight = weight[0]
+                        try:
+                            grade = require_edu_re_json[weight]
+                        except:
+                            grade = 0
+                        # print(weight)
+                        weights.append(grade)
+                elif index_key == 'training_exps':
+                    for idx, text in enumerate(sentence): 
+                        sentence[idx] = re.findall(r'\[(\w+)\]', text)[0]
+                        weights.append(0.8)
+                elif index_key == 'skill_exps' or index_key == 'language_exps':
+                    for idx, text in enumerate(sentence): 
+                        sentence[idx] = re.sub(r'\[(\w+)\]', '', text)
+                        weight = re.findall(r'\[(\w+)\]', text)
+                        if len(weight) != 0: weight = weight[0]
+                        try:
+                            grade = 0.2 * level_json[weight]
+                        except:
+                            grade = 0
+                        weights.append(grade)
+                elif index_key == 'cert_exps':
+                    for idx, text in enumerate(sentence):
+                        sentence[idx] = re.sub(r'\[(\w+)\]', '', text)
+                        weights.append(0.6)
                 else:
                     pass
 

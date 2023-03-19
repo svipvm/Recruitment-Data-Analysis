@@ -3,6 +3,9 @@ import cpca, re, json, torch
 import numpy as np
 import pandas as pd
 
+require_edu_re_json = {'不限': 0, '技工': 1, '大专': 2, '本科': 3, '硕士': 4, '博士': 5}
+level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
+
 JOB_CSV_FILE = 'datasets/recruitment-info.csv'
 HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
 # job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')

@@ -6,8 +6,6 @@ from tqdm import tqdm
 
 require_kind_json = { 0: '实习', 1: '不限', 2: '全职'} # self to fill
 require_edu_json = { 0: '不限', 1: '技工', 2: '大专', 3: '本科', 4: '硕士', 5: '博士'}
-level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
-require_edu_re_json = {'不限': 0, '技工': 1, '大专': 2, '本科': 3, '硕士': 4, '博士': 5}
 WITH_ENCODE_ITEMS = ['pos_name', 'pos_keys', 'skill_keys']
 
 # DEBUG = True

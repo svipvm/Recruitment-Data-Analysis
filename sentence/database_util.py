@@ -405,7 +405,7 @@ def get_index_by_object_id(obj_type, obj_id):
         - obj_id: The id(key) of object
     Returns: Returns the corresponding index if the object exists, otherwise -1
     '''
-    obj_name = 'job' if obj_type == 0 else 'hunters'
+    obj_name = 'jobs' if obj_type == 0 else 'hunters'
     if obj_id in both_info_map_bak[obj_name]:
         return both_info_map_bak[obj_name][obj_id]
     else:
@@ -420,7 +420,7 @@ def set_index_by_object_id(obj_type, obj_id):
         - obj_id: The id of object
     Returns: None
     '''
-    obj_name = 'job' if obj_type == 0 else 'hunters'
+    obj_name = 'jobs' if obj_type == 0 else 'hunters'
     if obj_name not in both_info_map_bak:
         both_info_map_bak[obj_name] = {}
     if obj_id not in both_info_map_bak[obj_name]:
@@ -447,7 +447,7 @@ def _expand_score_database_by_obj_type(obj_type):
     '''
     num_job, num_hunter = _get_max_index_for_both_info()
     max_inx, max_iny = (num_job, num_hunter) if obj_type == 0 else (num_hunter, num_job)
-    obj_name = 'job' if obj_type == 0 else 'hunters'
+    obj_name = 'jobs' if obj_type == 0 else 'hunters'
     if obj_name not in both_score_info_bak:
         both_score_info_bak[obj_name] = [[]]
     if not isinstance(both_score_info_bak[obj_name], np.ndarray):
@@ -489,7 +489,7 @@ def set_score_by_multi_id(obj_type, row_key, col_key, score_id, score):
         - score: The score to store
     Returns: None
     '''
-    obj_name = 'job' if obj_type == 0 else 'hunters'
+    obj_name = 'jobs' if obj_type == 0 else 'hunters'
     row_id = get_index_by_object_id(obj_type, row_key)
     col_id = get_index_by_object_id(obj_type ^ 1, col_key)
     # print(row_id, col_id, score_id, score)
@@ -509,7 +509,7 @@ def get_score_by_multi_id(obj_type, row_key, col_key, score_id):
         - score_id: The type of object
     Returns: Scores in the corresponding backup system
     '''
-    obj_name = 'job' if obj_type == 0 else 'hunters'
+    obj_name = 'jobs' if obj_type == 0 else 'hunters'
     row_id = get_index_by_object_id(obj_type, row_key)
     col_id = get_index_by_object_id(obj_type ^ 1, col_key)
     if row_id != -1 and col_id != -1:
@@ -591,3 +591,60 @@ def query_top_k_index(main_vector, equal_vector, k_top=None, k_rate=None):
     # print(index)
     # return np.argmax(cos_score, axis=1)[:min(cos_score.shape[0], k_top)]
     return np.argsort(scores)[-k_top:]
+
+def get_scores_by_type(type_id):
+    type_name = 'jobs' if type_id == 0 else 'hunters'
+    scores = both_score_info_bak[type_name]
+    # print(scores.shape)
+    base_score = scores[..., 0]
+    main_score = scores[..., 1]
+    extra_score = scores[..., 2]
+    # print(base_score.shape)
+    scores = (base_score > 0.1).astype(np.int32) * (base_score + main_score + extra_score) / 3.0
+    # scores = base_score
+    return scores
+
+_job_key_list, _job_val_list = None, None
+_hunter_key_list, _hunter_val_list = None, None
+def _get_obj_key_by_index(type_id, index):
+    global _job_key_list, _job_val_list
+    global _hunter_key_list, _hunter_val_list
+    if _job_key_list == None:
+        _job_key_list = list(both_info_map_bak['jobs'].keys())
+        _job_val_list = list(both_info_map_bak['jobs'].values())
+    if _hunter_key_list == None:
+        _hunter_key_list = list(both_info_map_bak['hunters'].keys())
+        _hunter_val_list = list(both_info_map_bak['hunters'].values())
+    if type_id == 0:
+        return _job_key_list[_job_val_list.index(index)]
+    elif type_id == 1:
+        return _hunter_key_list[_hunter_val_list.index(index)]
+
+def save_score_to_csv(type_id, scores, save_csv_file):
+    assert len(scores.shape) == 2
+    if type_id == 0:
+        json_data = {"招聘信息 ID":[], "求职者 ID":[], "岗位匹配度": []}
+    else:
+        json_data = {"求职者 ID":[], "招聘信息 ID":[], "公司名称": [], "求职者满意度": []}
+    main_index_len, vice_index_len = scores.shape[:2]
+    sorted_index = np.argsort(-scores.reshape(1, -1)[0])
+    x_indexs, y_indexs = np.unravel_index(sorted_index, scores.shape)
+    total_len = main_index_len * vice_index_len
+    for index in range(total_len):
+        x_index, y_index = x_indexs[index], y_indexs[index]
+        score = scores[x_index][y_index]
+        if score <= 0.01: break
+        x_key = _get_obj_key_by_index(type_id, x_index)
+        y_key = _get_obj_key_by_index(type_id ^ 1, y_index)
+        if type_id == 0:
+            json_data['招聘信息 ID'].append(x_key)
+            json_data['求职者 ID'].append(y_key)
+            json_data['岗位匹配度'].append(score)
+        elif type_id == 1:
+            json_data['求职者 ID'].append(x_key)
+            json_data['招聘信息 ID'].append(y_key)
+            json_data['公司名称'].append('non-name')
+            json_data['求职者满意度'].append(score)
+
+    frame_data = pd.DataFrame(json_data)
+    frame_data.to_csv(save_csv_file, index=False, encoding="GBK")

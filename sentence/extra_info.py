@@ -2,6 +2,7 @@ import re, time
 import numpy as np
 # sys.path.append('sentence')
 from database_util import *
+import traceback
 from tqdm import tqdm
 
 field_for_hunter = {
@@ -133,7 +134,8 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
             encode_result[obj_id][index_key]['weights'] = weights
                 
         except Exception as e:
-            print(key, e)
+            print(key, weight, e)
+            traceback.print_exc()
     
     # print(encode_result)
     # print(base_object_encode(ojb_id, encode_result[ojb_id]))
@@ -191,6 +193,7 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
         if len(vice_vector) == 0: continue
         main_vector_index = query_top_k_index(main_vector, equal_vector, k_rate=0.3)
         # print(main_vector_index)
+        if len(main_vector_index) == 0: continue
         score = every_multi_score(main_vector[main_vector_index], vice_vector, 'weights', weights)
         # score = 0.5
     #     vice_item = vice_obj[key]

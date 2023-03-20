@@ -4,12 +4,15 @@ from base_info import *
 from main_info import *
 from extra_info import *
 
+MAIN_JOB_CSV_FILE = 'datasets/result3-1.csv'
+MAIN_HUNTER_CSV_FILE = 'datasets/result3-2.csv'
+
 
 if __name__ == '__main__':
     start_time = time.time()
     # size = job_data.shape[0]
     # ==================================== Begin: Base Score ====================================
-    size = 5
+    size = 100
     for index_ in tqdm(range(size), desc='Job-Base-Info'):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
@@ -195,14 +198,21 @@ if __name__ == '__main__':
                 extra_score = calc_extra_score(1, main_vector, key2, job_item)
                 set_score_by_multi_id(1, key1, key2, 2, extra_score)
             else:
-                extra_score = get_score_by_multi_id(0, key1, key2, 2)
+                extra_score = get_score_by_multi_id(1, key1, key2, 2)
             part_result.append(extra_score)
         #     break
         result.append(part_result)
 
+    save_both_score_info_database()
     # ==================================== End: Extra Score =====================================
 
-    save_both_score_info_database()
-
+    # ================================= Begin: Calculate Score ==================================
+    job_scores = get_scores_by_type(0)
+    save_score_to_csv(0, job_scores, MAIN_JOB_CSV_FILE)
+    # print(job_scores)
+    # print(job_scores.shape)
+    hunter_scores = get_scores_by_type(1)
+    save_score_to_csv(1, hunter_scores, MAIN_HUNTER_CSV_FILE)
+    # ================================== End: Calculate Score ===================================
 
     print('times:', time.time() - start_time)

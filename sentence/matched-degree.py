@@ -164,7 +164,7 @@ if __name__ == '__main__':
     save_info_database('extra', 1, hunter_extra_dict)
     
     encode_equal_data()
-    if DEBUG: save_info_database('equal', None, equal_field_dcit)
+    if DEBUG: save_info_database('equal', None, equal_field_dict)
 
     result = []
     for key1, job_item in job_extra_dict.items():
@@ -173,21 +173,36 @@ if __name__ == '__main__':
         main_sentence, main_vector = get_extra_sentence_and_vector(0, key1)
         if main_vector is None: main_vector = base_model.encode(main_sentence)
         for key2, hunter_item in hunter_extra_dict.items():
-            # print(job_item, hunter_item)
             valid_hunter = info_is_modified(1, key2)
             if valid_job or valid_hunter:
-                # print(key1, key2, base_score)
                 extra_score = calc_extra_score(0, main_vector, key2, hunter_item)
                 set_score_by_multi_id(0, key1, key2, 2, extra_score)
             else:
                 extra_score = get_score_by_multi_id(0, key1, key2, 2)
             part_result.append(extra_score)
+        #     break
+        result.append(part_result)
 
+    result = []
+    for key1, hunter_item in hunter_extra_dict.items():
+        part_result = []
+        valid_hunter = info_is_modified(1, key1)
+        main_sentence, main_vector = get_extra_sentence_and_vector(1, key1)
+        if main_vector is None: main_vector = base_model.encode(main_sentence)
+        for key2, job_item in job_extra_dict.items():
+            valid_job = info_is_modified(0, key2)
+            if valid_job or valid_hunter:
+                extra_score = calc_extra_score(1, main_vector, key2, job_item)
+                set_score_by_multi_id(1, key1, key2, 2, extra_score)
+            else:
+                extra_score = get_score_by_multi_id(0, key1, key2, 2)
+            part_result.append(extra_score)
         #     break
         result.append(part_result)
 
     # ==================================== End: Extra Score =====================================
 
     save_both_score_info_database()
+
 
     print('times:', time.time() - start_time)

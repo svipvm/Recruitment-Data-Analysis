@@ -19,7 +19,6 @@ field_for_job = {
     'job_welfare': ['额外福利', '工作福利']
 }
 
-equal_field_dcit = {} # field_key {sentence: ..., vector: ...}
 job_extra_dict = {} # id_key: {sentence: ..., vector: ...}
 hunter_extra_dict = {} # id_key: {sentence: ..., vector: ...}
 
@@ -39,13 +38,13 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
     obj_name = 'job' if obj_type == 0 else 'hunter'
     extra_dict = field_for_job if obj_type == 0 else field_for_hunter
 
-    if obj_name not in equal_field_dcit: 
-        equal_field_dcit[obj_name] = {}
+    if obj_name not in equal_field_dict: 
+        equal_field_dict[obj_name] = {}
         for key, value in extra_dict.items():
             if key == 'job_id' or key == 'hunter_id': continue
-            equal_field_dcit[obj_name][key] = {}
-            equal_field_dcit[obj_name][key]['sentence'] = value
-            equal_field_dcit[obj_name][key]['vector'] = extra_model.encode(value)
+            equal_field_dict[obj_name][key] = {}
+            equal_field_dict[obj_name][key]['sentence'] = value
+            equal_field_dict[obj_name][key]['vector'] = extra_model.encode(value)
 
     # {id: {sentence: ...}, pos_name: {sentence: ..., vector: ...}, ...}
     encode_result = {} 
@@ -152,13 +151,13 @@ def encode_equal_data():
     for obj_type in [0, 1]:
         obj_name = 'job' if obj_type == 0 else 'hunter'
         extra_dict = field_for_job if obj_type == 0 else field_for_hunter
-        if obj_name not in equal_field_dcit: 
-            equal_field_dcit[obj_name] = {}
+        if obj_name not in equal_field_dict: 
+            equal_field_dict[obj_name] = {}
             for key, value in extra_dict.items():
                 if key == 'job_id' or key == 'hunter_id': continue
-                equal_field_dcit[obj_name][key] = {}
-                equal_field_dcit[obj_name][key]['sentence'] = value
-                equal_field_dcit[obj_name][key]['vector'] = extra_model.encode(value)
+                equal_field_dict[obj_name][key] = {}
+                equal_field_dict[obj_name][key]['sentence'] = value
+                equal_field_dict[obj_name][key]['vector'] = extra_model.encode(value)
 
 def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
     '''
@@ -166,16 +165,34 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
 
     Args:
         - obj_type: The type of the main object
-        - main_obj: main object
         - vice_obj: vice object
     Returns: The extra score
     '''
-    extra_score = 1.0
+    vice_obj_name = 'job' if obj_type == 1 else 'hunter'
+
+    if obj_type == 0:
+        item_base_score = 1 / (len(field_for_hunter) - 1)
+    else:
+        item_base_score = 1 / (len(field_for_job) - 1)
+    extra_score = 0.0
     # main_sentence, main_vector = get_extra_sentence_and_vector(obj_type, main_id)
     # if main_vector is None: main_vector = model.encode(main_sentence)
     # print(main_sentence, len(main_vector))
+    # vice_dict = job_extra_dict if obj_type == 1 else hunter_extra_dict
 
-    # for key, main_item in main_obj.items():
+    for key, vice_item in vice_obj.items():
+        # print(key, len(vice_item))
+        sentence = vice_item['sentence']
+        weights = vice_item['weights']
+        vice_vector = vice_item['vector']
+        equal_vector = equal_field_dict[vice_obj_name][key]['vector']
+
+        # print(len(main_vector))
+        if len(vice_vector) == 0: continue
+        main_vector_index = query_top_k_index(main_vector, equal_vector, k_rate=0.3)
+        # print(main_vector_index)
+        score = every_multi_score(main_vector[main_vector_index], vice_vector, 'weights', weights)
+        # score = 0.5
     #     vice_item = vice_obj[key]
     #     sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
 
@@ -188,7 +205,7 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
     #         if len(vector1) == 0 or len(vector2) == 0: score = 0.1
     #         else: score = every_multi_score(vector1, vector2, 'k-mean')
         
-    #     extra_score *= score
+        extra_score += item_base_score * score
 
     return extra_score
 

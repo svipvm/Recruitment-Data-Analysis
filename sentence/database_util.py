@@ -8,6 +8,8 @@ DEBUG = True
 require_edu_re_json = {'不限': 0, '技工': 1, '大专': 2, '本科': 3, '硕士': 4, '博士': 5}
 level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
 
+equal_field_dict = {} # field_key {sentence: ..., vector: ...}
+
 JOB_CSV_FILE = 'datasets/recruitment-info.csv'
 HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
 # job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
@@ -222,7 +224,7 @@ def change_years(years):
     if len(years) == 0: years = [0]
     return years
 
-def every_multi_score(vector1, vector2, method='mean'):
+def every_multi_score(vector1, vector2, method='mean', weights=None):
     '''
     The influence of vector2 on it is measured from the perspective of vector1
 
@@ -244,6 +246,8 @@ def every_multi_score(vector1, vector2, method='mean'):
     elif method == 'k-mean':
         k_rate = int(np.ceil(len(scores) * 0.3))
         multi_score = np.mean(np.sort(scores)[-k_rate:])
+    elif method == 'weights':
+        multi_score = np.mean(scores)
     else: # sum
         multi_score = np.dot(scores, [1] * len(scores))
     return multi_score
@@ -566,6 +570,24 @@ def get_extra_sentence_and_vector(obj_type, obj_id):
         return (main_job_info_bak[obj_id]['require']['sentence'], 
                 main_job_info_bak[obj_id]['require']['vector'])
     elif obj_type == 1:
-        text = '这属于是好福利，也就是说这属于好处。'
+        text = ['这属于是好福利，也就是说这属于好处。']
         return (text, None)
     
+def query_top_k_index(main_vector, equal_vector, k_top=None, k_rate=None):
+    if k_rate != None:
+        k_top = int(np.ceil(len(main_vector) * k_rate))
+    k_top = min(len(main_vector), k_top)
+    if not isinstance(main_vector, torch.Tensor): main_vector = torch.tensor(main_vector)
+    if not isinstance(equal_vector, torch.Tensor): equal_vector = torch.tensor(equal_vector)
+    # print(vector1.shape, vector2.shape)
+    cos_score = util.cos_sim(main_vector, equal_vector).numpy()
+    scores = np.max(cos_score, axis=1, keepdims=True).reshape(1, -1)[0]
+    # print(cos_score.shape)
+    # scores = [np.max(cos_score[i, :], keepdims=False) for i in range(cos_score.shape[0])]
+    # print(cos_score)
+    # index = [np.argmax(cos_score[i, :], axis=0) for i in range(cos_score.shape[0])]
+    # print(index)
+    # index = [np.argmax(cos_score[i, :], axis=1) for i in range(cos_score.shape[0])]
+    # print(index)
+    # return np.argmax(cos_score, axis=1)[:min(cos_score.shape[0], k_top)]
+    return np.argsort(scores)[-k_top:]

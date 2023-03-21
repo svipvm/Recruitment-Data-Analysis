@@ -59,6 +59,7 @@ def encode_main_data(obj, obj_type: int, dict_data: dict):
         for key, value in main_dict.items():
             if key in WITH_ENCODE_ITEMS:
                 encode_result[obj_id][key]['vector'] = main_model.encode(encode_result[obj_id][key]['sentence'])
+        set_info_item('main', obj_type, obj_id, encode_result[obj_id])
     else:
         encode_result[obj_id] = get_info_item('main', obj_type, obj_id)
     set_index_by_object_id(obj_type, obj_id)

@@ -1,6 +1,8 @@
 record/*
 *.rar
 *.json
+*.data
+*.csv
 __pycache__
 *.pyc
-*.csv
+*.bin

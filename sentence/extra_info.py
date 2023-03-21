@@ -71,13 +71,14 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
             elif obj_type == 1:
                 # sentence = try_to_eval(sentence)
                 weights = []
-                if index_key == 'competition_exps':
-                    for idx, text in enumerate(sentence):
+                for idx, text in enumerate(sentence):
+                    if index_key == 'competition_exps':
                         sentence[idx] = re.sub(r'^\w+\[\w+\]:', '', text)
                         sentence[idx] = re.sub(r'(第\w+届|全国|校园|中国|国际)*', '', sentence[idx])
 
-                        weight = re.findall(r'^\w+\[(\w+)\]:', text)
-                        if len(weight) != 0: weight = weight[0]
+                        # weight = re.findall(r'^\w+\[(\w+)\]:', text)
+                        weight = re.findall(r'^\w+\[(\w+)(、|\])', text)
+                        if len(weight) != 0: weight = weight[0][0]
                         grades = re.findall(r'((一|二|三|)等奖|(优秀)奖|(\w)牌)', weight)
                         grade_map = {'一': 0.4, '二': 0.3, '三': 0.2, '优秀': 0.1, 
                                      '金': 0.4, '银': 0.3, '铜': 0.2}
@@ -95,8 +96,8 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                         if '全国' in text: grade += 0.5
                         weights.append(grade)
                     # print(weights)
-                elif index_key == 'education_exps':
-                    for idx, text in enumerate(sentence):
+                    elif index_key == 'education_exps':
+                    # for idx, text in enumerate(sentence):
                         sentence[idx] = re.sub(r'^\w+\[\w+\]:', '', text)
 
                         weight = re.findall(r'^\w+\[(\w+)\]:', text)
@@ -107,12 +108,12 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                             grade = 0
                         # print(weight)
                         weights.append(grade)
-                elif index_key == 'training_exps':
-                    for idx, text in enumerate(sentence): 
+                    elif index_key == 'training_exps':
+                    # for idx, text in enumerate(sentence): 
                         sentence[idx] = re.findall(r'\[(\w+)\]', text)[0]
                         weights.append(0.8)
-                elif index_key == 'skill_exps' or index_key == 'language_exps':
-                    for idx, text in enumerate(sentence): 
+                    elif index_key == 'skill_exps' or index_key == 'language_exps':
+                    # for idx, text in enumerate(sentence): 
                         sentence[idx] = re.sub(r'\[(\w+)\]', '', text)
                         weight = re.findall(r'\[(\w+)\]', text)
                         if len(weight) != 0: weight = weight[0]
@@ -121,8 +122,8 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                         except:
                             grade = 0
                         weights.append(grade)
-                elif index_key == 'cert_exps':
-                    for idx, text in enumerate(sentence):
+                    elif index_key == 'cert_exps':
+                    # for idx, text in enumerate(sentence):
                         sentence[idx] = re.sub(r'\[(\w+)\]', '', text)
                         weights.append(0.6)
                 # else:
@@ -134,7 +135,7 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
             encode_result[obj_id][index_key]['weights'] = weights
                 
         except Exception as e:
-            print(key, weight, e)
+            print(obj_id, key, weight, e)
             traceback.print_exc()
     
     # print(encode_result)
@@ -143,6 +144,7 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
         for key, value in extra_dict.items():
             if key in ['job_id', 'hunter_id']: continue
             encode_result[obj_id][key]['vector'] = extra_model.encode(encode_result[obj_id][key]['sentence'])
+        set_info_item('extra', obj_type, obj_id, encode_result[obj_id])
     else:
         encode_result[obj_id] = get_info_item('extra', obj_type, obj_id)
     # set_index_by_object_id(obj_type, ojb_id)

@@ -12,7 +12,7 @@ if __name__ == '__main__':
     start_time = time.time()
     # size = job_data.shape[0]
     # ==================================== Begin: Base Score ====================================
-    size = 100
+    size = 10
     for index_ in tqdm(range(size), desc='Job-Base-Info'):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)

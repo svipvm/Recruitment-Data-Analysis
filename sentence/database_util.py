@@ -1,9 +1,9 @@
 from sentence_transformers import SentenceTransformer, util
-import cpca, re, json, torch
+import cpca, re, json, torch, pickle
 import numpy as np
 import pandas as pd
 
-DEBUG = True
+DEBUG = False
 
 require_edu_re_json = {'不限': 0, '技工': 1, '大专': 2, '本科': 3, '硕士': 4, '博士': 5}
 level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
@@ -16,77 +16,110 @@ HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
 # hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
 # job_data, hunter_data = get_both_data()
 
+def _read_database(data_file, json_type=True):
+    if json_type:
+        with open(data_file + '.json', 'r', encoding='GBK') as f:
+            info_bak = json.loads(f.read())
+    else:
+        with open(data_file + '.data', 'rb') as f:
+            info_bak = pickle.load(f)
+    return info_bak
+
+def _save_database(data_file, data_dict, json_type=True):
+    if json_type:
+        with open(data_file + '.json', 'w', encoding='GBK') as f:
+            f.write(json.dumps(data_dict, cls=NpEncoder))
+    else:
+         with open(data_file + '.data', 'wb') as f:
+            pickle.dump(data_dict, f)
+
 # todo: convert json to pickle
-BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
+# BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
+BASE_JOB_INFO_BAK_FILE = 'database/base_job_info'
 base_job_info_bak = {}
 try:
-    with open(BASE_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-        base_job_info_bak = json.loads(f.read())
+    # with open(BASE_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
+    #     base_job_info_bak = json.loads(f.read())
+    base_job_info_bak = _read_database(BASE_JOB_INFO_BAK_FILE, DEBUG)
     print(BASE_JOB_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
 except Exception as e:
     print(BASE_JOB_INFO_BAK_FILE, 'lost, record again!')
 
-BASE_HUNTER_INFO_BAK_FILE = 'database/base_hunter_info.json'
+# BASE_HUNTER_INFO_BAK_FILE = 'database/base_hunter_info.json'
+BASE_HUNTER_INFO_BAK_FILE = 'database/base_hunter_info'
 base_hunter_info_bak = {}
 try:
-    with open(BASE_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-        base_hunter_info_bak = json.loads(f.read())
-    print(BASE_HUNTER_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+    # with open(BASE_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
+    #     base_hunter_info_bak = json.loads(f.read())
+    base_hunter_info_bak = _read_database(BASE_HUNTER_INFO_BAK_FILE, DEBUG)
+    print(BASE_HUNTER_INFO_BAK_FILE, 'size:', len(base_hunter_info_bak))
 except Exception as e:
     print(BASE_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
-MAIN_JOB_INFO_BAK_FILE = 'database/main_job_info.json'
+# MAIN_JOB_INFO_BAK_FILE = 'database/main_job_info.json'
+MAIN_JOB_INFO_BAK_FILE = 'database/main_job_info'
 main_job_info_bak = {}
 try:
-    with open(MAIN_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-        main_job_info_bak = json.loads(f.read())
-    print(MAIN_JOB_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+    # with open(MAIN_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
+    #     main_job_info_bak = json.loads(f.read())
+    main_job_info_bak = _read_database(MAIN_JOB_INFO_BAK_FILE, DEBUG)
+    print(MAIN_JOB_INFO_BAK_FILE, 'size:', len(main_job_info_bak))
 except Exception as e:
     print(MAIN_JOB_INFO_BAK_FILE, 'lost, record again!')
 
-MAIN_HUNTER_INFO_BAK_FILE = 'database/main_hunter_info.json'
+# MAIN_HUNTER_INFO_BAK_FILE = 'database/main_hunter_info.json'
+MAIN_HUNTER_INFO_BAK_FILE = 'database/main_hunter_info'
 main_hunter_info_bak = {}
 try:
-    with open(MAIN_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-        main_hunter_info_bak = json.loads(f.read())
-    print(MAIN_HUNTER_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+    # with open(MAIN_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
+    #     main_hunter_info_bak = json.loads(f.read())
+    main_hunter_info_bak = _read_database(MAIN_HUNTER_INFO_BAK_FILE, DEBUG)
+    print(MAIN_HUNTER_INFO_BAK_FILE, 'size:', len(main_hunter_info_bak))
 except Exception as e:
     print(MAIN_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
-EXTRA_JOB_INFO_BAK_FILE = 'database/extra_job_info.json'
+# EXTRA_JOB_INFO_BAK_FILE = 'database/extra_job_info.json'
+EXTRA_JOB_INFO_BAK_FILE = 'database/extra_job_info'
 extra_job_info_bak = {}
 try:
-    with open(EXTRA_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-        extra_job_info_bak = json.loads(f.read())
-    print(EXTRA_JOB_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+    # with open(EXTRA_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
+    #     extra_job_info_bak = json.loads(f.read())
+    extra_job_info_bak = _read_database(EXTRA_JOB_INFO_BAK_FILE, DEBUG)
+    print(EXTRA_JOB_INFO_BAK_FILE, 'size:', len(extra_job_info_bak))
 except Exception as e:
     print(EXTRA_JOB_INFO_BAK_FILE, 'lost, record again!')
 
-EXTRA_HUNTER_INFO_BAK_FILE = 'database/extra_hunter_info.json'
+# EXTRA_HUNTER_INFO_BAK_FILE = 'database/extra_hunter_info.json'
+EXTRA_HUNTER_INFO_BAK_FILE = 'database/extra_hunter_info'
 extra_hunter_info_bak = {}
 try:
-    with open(EXTRA_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-        extra_hunter_info_bak = json.loads(f.read())
-    print(EXTRA_HUNTER_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+    # with open(EXTRA_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
+    #     extra_hunter_info_bak = json.loads(f.read())
+    extra_hunter_info_bak = _read_database(EXTRA_HUNTER_INFO_BAK_FILE, DEBUG)
+    print(EXTRA_HUNTER_INFO_BAK_FILE, 'size:', len(extra_hunter_info_bak))
 except Exception as e:
     print(EXTRA_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
-BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map.json'
+# BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map.json'
+BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map'
 both_info_map_bak = {}
 try:
-    with open(BOTH_INFO_MAP_BAK_FILE, 'r', encoding='GBK') as f:
-        both_info_map_bak = json.loads(f.read())
-    print(BOTH_INFO_MAP_BAK_FILE, 'size:', len(base_job_info_bak))
+    # with open(BOTH_INFO_MAP_BAK_FILE, 'r', encoding='GBK') as f:
+    #     both_info_map_bak = json.loads(f.read())
+    both_info_map_bak = _read_database(BOTH_INFO_MAP_BAK_FILE, DEBUG)
+    print(BOTH_INFO_MAP_BAK_FILE, 'size:', len(both_info_map_bak))
 except Exception as e:
     print(BOTH_INFO_MAP_BAK_FILE, 'lost, record again!')
 _max_index_for_both_info = [-1, -1]
 
-BOTH_SCORE_INFO_BAK_FILE = 'database/both_score_info.json'
+# BOTH_SCORE_INFO_BAK_FILE = 'database/both_score_info.json'
+BOTH_SCORE_INFO_BAK_FILE = 'database/both_score_info'
 both_score_info_bak = {}
 try:
-    with open(BOTH_SCORE_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-        both_score_info_bak = json.loads(f.read())
-    print(BOTH_SCORE_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
+    # with open(BOTH_SCORE_INFO_BAK_FILE, 'r', encoding='GBK') as f:
+    #     both_score_info_bak = json.loads(f.read())
+    both_score_info_bak = _read_database(BOTH_SCORE_INFO_BAK_FILE, DEBUG)
+    print(BOTH_SCORE_INFO_BAK_FILE, 'size:', len(both_score_info_bak))
 except Exception as e:
     print(BOTH_SCORE_INFO_BAK_FILE, 'lost, record again!')
 # exists_obj_id = {}
@@ -238,7 +271,8 @@ def every_multi_score(vector1, vector2, method='mean', weights=None):
     if not isinstance(vector2, torch.Tensor): vector2 = torch.tensor(vector2)
     # print(vector1.shape, vector2.shape)
     cos_score = util.cos_sim(vector1, vector2).numpy()
-    scores = [np.max(cos_score[i, :], keepdims=False) for i in range(cos_score.shape[0])]
+    # scores = [np.max(cos_score[i, :], keepdims=False) for i in range(cos_score.shape[0])]
+    scores = np.max(cos_score, axis=1)
     if method == 'mean':
         multi_score = np.mean(scores)
     elif method == 'max':
@@ -247,7 +281,10 @@ def every_multi_score(vector1, vector2, method='mean', weights=None):
         k_rate = int(np.ceil(len(scores) * 0.3))
         multi_score = np.mean(np.sort(scores)[-k_rate:])
     elif method == 'weights':
-        multi_score = np.mean(scores)
+        weights = np.array(weights)
+        max_indexs = np.argmax(cos_score, axis=1)
+        # print(scores, max_indexs, weights)
+        multi_score = np.mean(scores * weights[max_indexs])
     else: # sum
         multi_score = np.dot(scores, [1] * len(scores))
     return multi_score
@@ -360,6 +397,26 @@ def get_info_item(data_name, obj_type, info_id):
     assert info_id in info_bak
     return info_bak[info_id]
 
+def set_info_item(data_name, obj_type, info_id, info_data):
+    '''
+    Set object information from the backup system
+
+    Args:
+        - obj_type: The type of object
+        - info_id: The id of the object
+    Returns: The object information recorded in the backup system
+    '''
+    # info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
+    if data_name == 'base':
+        info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
+    elif data_name == 'main':
+        info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
+    elif data_name == 'extra':
+        info_bak = extra_job_info_bak if obj_type == 0 else extra_hunter_info_bak
+    # print(len(info_bak))
+    # assert info_id in info_bak
+    info_bak[info_id] = info_data
+
 def save_info_database(data_name, obj_type, data_dict):
     '''
     Update object information in the backup system
@@ -369,31 +426,32 @@ def save_info_database(data_name, obj_type, data_dict):
         - data_dict: Information about the object to save
     Returns: None
     '''
-    global base_job_info_bak, base_hunter_info_bak
-    global main_job_info_bak, main_hunter_info_bak
-    global extra_job_info_bak, extra_hunter_info_bak
+    # global base_job_info_bak, base_hunter_info_bak
+    # global main_job_info_bak, main_hunter_info_bak
+    # global extra_job_info_bak, extra_hunter_info_bak
 
     if data_name == 'base':
         info_bak_file = BASE_JOB_INFO_BAK_FILE if obj_type == 0 else BASE_HUNTER_INFO_BAK_FILE
-        if obj_type == 0: base_job_info_bak = data_dict
-        else: base_hunter_info_bak = data_dict
+        # if obj_type == 0: base_job_info_bak = data_dict
+        # else: base_hunter_info_bak = data_dict
         # info_bak = base_job_info_bak if obj_type == 0 else base_hunter_info_bak
     elif data_name == 'main':
         info_bak_file = MAIN_JOB_INFO_BAK_FILE if obj_type == 0 else MAIN_HUNTER_INFO_BAK_FILE
         # info_bak = main_job_info_bak if obj_type == 0 else main_hunter_info_bak
-        if obj_type == 0: main_job_info_bak = data_dict
-        else: main_hunter_info_bak = data_dict
+        # if obj_type == 0: main_job_info_bak = data_dict
+        # else: main_hunter_info_bak = data_dict
     elif data_name == 'extra':
         info_bak_file = EXTRA_JOB_INFO_BAK_FILE if obj_type == 0 else EXTRA_HUNTER_INFO_BAK_FILE
         # info_bak = extra_job_info_bak if obj_type == 0 else extra_hunter_info_bak
-        if obj_type == 0: extra_job_info_bak = data_dict
-        else: extra_hunter_info_bak = data_dict
+        # if obj_type == 0: extra_job_info_bak = data_dict
+        # else: extra_hunter_info_bak = data_dict
     elif data_name == 'equal':
-        info_bak_file = 'database/equal_field_info.json'
+        info_bak_file = 'database/equal_field_info'
         # info_bak = None
     # print(type(data_dict))
-    with open(info_bak_file, 'w') as f:
-        f.write(json.dumps(data_dict, cls=NpEncoder))
+    # with open(info_bak_file, 'w') as f:
+    #     f.write(json.dumps(data_dict, cls=NpEncoder))
+    _save_database(info_bak_file, data_dict, DEBUG)
     # info_bak = data_dict
 
 def get_index_by_object_id(obj_type, obj_id):
@@ -521,15 +579,17 @@ def save_both_info_map_database():
     '''
     Update object index information in the backup system
     '''
-    with open(BOTH_INFO_MAP_BAK_FILE, 'w') as f:
-        f.write(json.dumps(both_info_map_bak, cls=NpEncoder))
+    # with open(BOTH_INFO_MAP_BAK_FILE, 'w') as f:
+    #     f.write(json.dumps(both_info_map_bak, cls=NpEncoder))
+    _save_database(BOTH_INFO_MAP_BAK_FILE, both_info_map_bak, DEBUG)
 
 def save_both_score_info_database():
     '''
     Update object score information in the backup system
     '''
-    with open(BOTH_SCORE_INFO_BAK_FILE, 'w') as f:
-        f.write(json.dumps(both_score_info_bak, cls=NpEncoder))
+    # with open(BOTH_SCORE_INFO_BAK_FILE, 'w') as f:
+    #     f.write(json.dumps(both_score_info_bak, cls=NpEncoder))
+    _save_database(BOTH_SCORE_INFO_BAK_FILE, both_score_info_bak, DEBUG)
 
 def parse_long_text_list(text_list):
     WORD_THRESHOLD = 10
@@ -620,6 +680,11 @@ def _get_obj_key_by_index(type_id, index):
     elif type_id == 1:
         return _hunter_key_list[_hunter_val_list.index(index)]
 
+def _get_origin_item(type_id, obj_key, obj_index):
+    obj_key_index = 'job_id' if type_id == 0 else 'hunter_id'
+    data = job_data if type_id == 0 else hunter_data
+    return data[data[obj_key_index] == int(obj_key)][obj_index].values[0]
+
 def save_score_to_csv(type_id, scores, save_csv_file):
     assert len(scores.shape) == 2
     if type_id == 0:
@@ -637,14 +702,14 @@ def save_score_to_csv(type_id, scores, save_csv_file):
         x_key = _get_obj_key_by_index(type_id, x_index)
         y_key = _get_obj_key_by_index(type_id ^ 1, y_index)
         if type_id == 0:
-            json_data['招聘信息 ID'].append(x_key)
-            json_data['求职者 ID'].append(y_key)
+            json_data['招聘信息 ID'].append('\t' + str(x_key))
+            json_data['求职者 ID'].append('\t' + str(y_key))
             json_data['岗位匹配度'].append(score)
         elif type_id == 1:
-            json_data['求职者 ID'].append(x_key)
-            json_data['招聘信息 ID'].append(y_key)
-            json_data['公司名称'].append('non-name')
+            json_data['求职者 ID'].append('\t' + str(x_key))
+            json_data['招聘信息 ID'].append('\t' + str(y_key))
+            json_data['公司名称'].append(_get_origin_item(0, y_key, 'company_full_name'))
             json_data['求职者满意度'].append(score)
 
     frame_data = pd.DataFrame(json_data)
-    frame_data.to_csv(save_csv_file, index=False, encoding="GBK")
+    frame_data.to_csv(save_csv_file, index=False, float_format='%.2f', encoding="GBK")

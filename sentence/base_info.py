@@ -8,10 +8,6 @@ require_kind_json = { 0: '实习', 1: '不限', 2: '全职'} # self to fill
 require_edu_json = { 0: '不限', 1: '技工', 2: '大专', 3: '本科', 4: '硕士', 5: '博士'}
 WITH_ENCODE_ITEMS = ['pos_name', 'pos_keys', 'skill_keys']
 
-# DEBUG = True
-# if DEBUG:
-#     job_data, hunter_data = get_both_data()
-
 base_dict = {
     'id': (['job_id'], ['hunter_id']),
     'pos_name': (['position_name'], ['exp_position']),
@@ -92,6 +88,7 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
         for key, value in base_dict.items():
             if key in WITH_ENCODE_ITEMS:
                 encode_result[obj_id][key]['vector'] = base_model.encode(encode_result[obj_id][key]['sentence'])
+        set_info_item('base', obj_type, obj_id, encode_result[obj_id])
     else:
         encode_result[obj_id] = get_info_item('base', obj_type, obj_id)
     set_index_by_object_id(obj_type, obj_id)

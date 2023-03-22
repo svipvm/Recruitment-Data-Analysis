@@ -1,9 +1,10 @@
-import re, time
+import re, time, os
 import numpy as np
 from base_info import *
 from main_info import *
 from extra_info import *
 
+os.makedirs('datasets', exist_ok=True)
 MAIN_JOB_CSV_FILE = 'datasets/result3-1.csv'
 MAIN_HUNTER_CSV_FILE = 'datasets/result3-2.csv'
 
@@ -12,14 +13,14 @@ if __name__ == '__main__':
     start_time = time.time()
     # size = job_data.shape[0]
     # ==================================== Begin: Base Score ====================================
-    job_size = 12
+    job_size = 110
     for index_ in tqdm(range(job_size), desc='Job-Base-Info'):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
     save_info_database('base', 0, job_base_dict)
 
     # size = hunter_data.shape[0]
-    hunter_size = 9
+    hunter_size = 90
     for index_ in tqdm(range(hunter_size), desc='Hunter-Base-Info'):
         hunter = hunter_data.iloc[index_,:]
         encode_base_data(hunter, 1, hunter_base_dict)

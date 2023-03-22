@@ -121,7 +121,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
         - vice_obj: vice object
     Returns: The basic score
     '''
-    pos_name_threshold = 0.2
+    pos_name_threshold = 0.35
     base_score = 0.0
     for key, main_item in main_obj.items():
         vice_item = vice_obj[key]

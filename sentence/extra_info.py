@@ -14,11 +14,30 @@ field_for_hunter = {
     'language_exps': ['掌握交流语言', '外语能力'],
     'cert_exps': ['各方面能力'],
 }
+extra_hunter_score_weights = {
+    'competition_exps': 3,
+    'education_exps': 4,
+    'training_exps': 3,
+    'skill_exps': 3,
+    'language_exps': 2,
+    'cert_exps': 2,
+}
+extra_hunter_score_sum = np.sum([weight for _, weight in extra_hunter_score_weights.items()])
+for key, weight in extra_hunter_score_weights.items():
+    extra_hunter_score_weights[key] = weight / extra_hunter_score_sum
 
 field_for_job = {
     'job_id': [],
     'job_welfare': ['额外福利', '工作福利']
 }
+extra_job_score_weights = {
+    'job_welfare': 1
+}
+extra_job_score_sum = np.sum([weight for _, weight in extra_job_score_weights.items()])
+for key, weight in extra_job_score_weights.items():
+    extra_job_score_weights[key] = weight / extra_job_score_sum
+if DEBUG: print('extra score weights:\n', '\t', extra_hunter_score_weights, 
+                '\n\t', extra_job_score_weights)
 
 job_extra_dict = {} # id_key: {sentence: ..., vector: ...}
 hunter_extra_dict = {} # id_key: {sentence: ..., vector: ...}
@@ -173,11 +192,11 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
     Returns: The extra score
     '''
     vice_obj_name = 'job' if obj_type == 1 else 'hunter'
-
-    if obj_type == 0:
-        item_base_score = 1 / (len(field_for_hunter) - 1)
-    else:
-        item_base_score = 1 / (len(field_for_job) - 1)
+    score_weights = extra_job_score_weights if obj_type == 1 else extra_hunter_score_weights
+    # if obj_type == 0:
+    #     item_base_score = 1 / (len(field_for_hunter) - 1)
+    # else:
+    #     item_base_score = 1 / (len(field_for_job) - 1)
     extra_score = 0.0
     # main_sentence, main_vector = get_extra_sentence_and_vector(obj_type, main_id)
     # if main_vector is None: main_vector = model.encode(main_sentence)
@@ -210,7 +229,8 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
     #         if len(vector1) == 0 or len(vector2) == 0: score = 0.1
     #         else: score = every_multi_score(vector1, vector2, 'k-mean')
         
-        extra_score += item_base_score * score
+        # extra_score += item_base_score * score
+        extra_score += score * score_weights[key]
 
     return extra_score
 

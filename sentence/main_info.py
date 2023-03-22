@@ -12,6 +12,14 @@ main_dict = {
     # 'require': (['job_require'], ['hunter_eval', 'job_exps', 'project_exps', 'competition_exps', 
     #             'education_exps', 'training_exps', 'skill_exps', 'language_exps', 'cert_exps'])
 }
+main_score_weights = {
+    'require': 1,
+}
+main_score_sum = np.sum([weight for _, weight in main_score_weights.items()])
+for key, weight in main_score_weights.items():
+    main_score_weights[key] = weight / main_score_sum
+if DEBUG: print('main score weights:\n', '\t', main_score_weights)
+
 job_main_dict = {} # id_key: {sentence: ..., vector: ..., }
 hunter_main_dict = {} # id_key: {sentence: ..., vector: ..., }
 
@@ -77,7 +85,7 @@ def calc_main_score(obj_type: int, main_obj: dict, vice_obj: dict):
         - vice_obj: vice object
     Returns: The main score
     '''
-    main_score = 1.0
+    main_score = 0.0
     for key, main_item in main_obj.items():
         vice_item = vice_obj[key]
         sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
@@ -90,7 +98,7 @@ def calc_main_score(obj_type: int, main_obj: dict, vice_obj: dict):
             else:
                 if len(vector1) == 0 or len(vector2) == 0: score = 0.1
                 else: score = every_multi_score(vector1, vector2, 'k-mean')
-        main_score *= score
+        main_score += score * main_score_weights[key]
 
     return main_score
 

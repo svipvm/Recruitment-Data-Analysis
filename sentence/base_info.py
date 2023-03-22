@@ -19,6 +19,21 @@ base_dict = {
     'cor_addr': (['company_addr', 'company_full_name'], ['exp_city']),
     'skill_keys': (['skill_keys'], ['skill_exps'])
 }
+base_score_weights = {
+    'pos_name': 3,
+    'job_wage': 2,
+    'job_kind': 3,
+    'exp_edu': 2,
+    'job_years': 2,
+    'pos_keys': 3,
+    'cor_addr': 2,
+    'skill_keys': 3,
+}
+base_score_sum = np.sum([weight for _, weight in base_score_weights.items()])
+for key, weight in base_score_weights.items():
+    base_score_weights[key] = weight / base_score_sum
+if DEBUG: print('base score weights:\n', '\t', base_score_weights)
+
 job_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 hunter_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 
@@ -106,7 +121,8 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
         - vice_obj: vice object
     Returns: The basic score
     '''
-    base_score = 1.0
+    pos_name_threshold = 0.2
+    base_score = 0.0
     for key, main_item in main_obj.items():
         vice_item = vice_obj[key]
         sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
@@ -115,7 +131,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
             vector1, vector2 = main_item['vector'], vice_item['vector']
             if obj_type == 0:
                 if len(vector1) == 0: score = 1
-                elif len(vector2) == 0: score = 0.6
+                elif len(vector2) == 0: score = 0.3
                 else: score = every_multi_score(vector1, vector2, 'mean')
             else:
                 if len(vector1) == 0 or len(vector2) == 0: score = 1
@@ -149,7 +165,9 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
                     score = 1
             else:
                 score = 0.2
-        base_score *= score
+
+        if score <= 1e-6 or (key == 'pos_name' and score < pos_name_threshold): return 0
+        base_score += score * base_score_weights[key]
     return base_score
 
 if __name__ == '__main__':

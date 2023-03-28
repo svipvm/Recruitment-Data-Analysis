@@ -140,8 +140,8 @@ both_score_info_bak = _read_database(BOTH_SCORE_INFO_BAK_FILE, DEBUG)
 # exists_obj_id = {}
 modified_obj = {}
 
-# BASE_MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
-BASE_MODEL_PATH = 'C:\\Users\\vmice\\.cache\\torch\\sentence_transformers\\uer_sbert-base-chinese-nli'
+BASE_MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
+# BASE_MODEL_PATH = 'C:\\Users\\vmice\\.cache\\torch\\sentence_transformers\\uer_sbert-base-chinese-nli'
 # model = SentenceTransformer(BASE_MODEL_PATH)
 
 class NpEncoder(json.JSONEncoder):

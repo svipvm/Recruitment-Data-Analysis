@@ -15,11 +15,11 @@ field_for_hunter = {
     'cert_exps': ['各方面能力'],
 }
 extra_hunter_score_weights = {
-    'competition_exps': 3,
-    'education_exps': 4,
-    'training_exps': 3,
-    'skill_exps': 3,
-    'language_exps': 2,
+    'competition_exps': 6,
+    'education_exps': 3,
+    'training_exps': 6,
+    'skill_exps': 5,
+    'language_exps': 5,
     'cert_exps': 2,
 }
 extra_hunter_score_sum = np.sum([weight for _, weight in extra_hunter_score_weights.items()])
@@ -233,6 +233,7 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
     #         else: score = every_multi_score(vector1, vector2, 'k-mean')
         
         # extra_score += item_base_score * score
+        if score < 1e-8: score = 0
         extra_score += score * score_weights[key]
 
     return extra_score

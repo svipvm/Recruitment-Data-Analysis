@@ -21,7 +21,7 @@ if __name__ == '__main__':
     print("Save successfully for job base infomation.")
 
     # size = hunter_data.shape[0]
-    hunter_size = 99
+    hunter_size = hunter_data.shape[0]
     for index_ in tqdm(range(hunter_size), desc='Hunter-Base-Info'):
         hunter = hunter_data.iloc[index_,:]
         encode_base_data(hunter, 1, hunter_base_dict)
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # print(len(main_job_info_bak))
     
     result = []
-    for key1, job_item in job_base_dict.items():
+    for key1, job_item in tqdm(job_base_dict.items(), desc='Job-Base-Score'):
         part_result = []
         valid_job = info_is_modified(0, key1)
         for key2, hunter_item in hunter_base_dict.items():
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     #         result[inx][iny])
 
     result = []
-    for key1, hunter_item in hunter_base_dict.items():
+    for key1, hunter_item in tqdm(hunter_base_dict.items(), desc='Hunter-Base-Score'):
         part_result = []
         valid_hunter = info_is_modified(1, key1)
         for key2, job_item in job_base_dict.items():
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     print("Save successfully for hunter main infomation.")
     
     result = []
-    for key1, job_item in job_main_dict.items():
+    for key1, job_item in tqdm(job_main_dict.items(), desc='Job-Main-Score'):
         part_result = []
         valid_job = info_is_modified(0, key1)
         for key2, hunter_item in hunter_main_dict.items():
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     #         result[inx][iny])
         
     result = []
-    for key1, hunter_item in hunter_main_dict.items():
+    for key1, hunter_item in tqdm(hunter_main_dict.items(), desc='Hunter-Main-Score'):
         part_result = []
         valid_hunter = info_is_modified(1, key1)
         for key2, job_item in job_main_dict.items():
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     print("Save successfully for equal filed infomation.")
 
     result = []
-    for key1, job_item in job_extra_dict.items():
+    for key1, job_item in tqdm(job_extra_dict.items(), desc='Job-Extra-Score'):
         part_result = []
         valid_job = info_is_modified(0, key1)
         main_sentence, main_vector = get_extra_sentence_and_vector(0, key1)
@@ -196,7 +196,7 @@ if __name__ == '__main__':
         # result.append(part_result)
 
     result = []
-    for key1, hunter_item in hunter_extra_dict.items():
+    for key1, hunter_item in tqdm(hunter_extra_dict.items(), desc='Hunter-Extra-Score'):
         part_result = []
         valid_hunter = info_is_modified(1, key1)
         main_sentence, main_vector = get_extra_sentence_and_vector(1, key1)

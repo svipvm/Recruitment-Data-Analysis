@@ -295,7 +295,7 @@ def every_multi_score(vector1, vector2, method='mean', weights=None):
     elif method == 'max':
         multi_score = np.max(scores)
     elif method == 'k-mean':
-        k_rate = int(np.ceil(len(scores) * 0.3))
+        k_rate = int(np.ceil(len(scores) * 0.6))
         multi_score = np.mean(np.sort(scores)[-k_rate:])
     elif method == 'weights':
         weights = np.array(weights)
@@ -677,8 +677,8 @@ def get_scores_by_type(type_id):
     main_score = scores[..., 1]
     extra_score = scores[..., 2]
 
-    scores = (base_score > 0.1).astype(np.int32) * (
-        0.3 * base_score + 0.5 * main_score + 0.2 * extra_score)
+    scores = (base_score > 0.3).astype(np.int32) * (0.7 * main_score + 0.3 * extra_score)
+    # scores = (scores > 0.3).astype(np.int32) * scores
     
     return scores
 

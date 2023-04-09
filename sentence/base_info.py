@@ -41,7 +41,6 @@ hunter_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 # base_score_for_hunter = {}
 base_model = get_model('base')
 
-
 def encode_base_data(obj, obj_type: int, dict_data: dict):
     '''
     Read information from the backup database into the dictionary
@@ -123,6 +122,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
     '''
     pos_name_threshold = 0.35
     base_score = 0.0
+
     for key, main_item in main_obj.items():
         vice_item = vice_obj[key]
         sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
@@ -130,11 +130,11 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
         if key in WITH_ENCODE_ITEMS:
             vector1, vector2 = main_item['vector'], vice_item['vector']
             if obj_type == 0:
-                if len(vector1) == 0: score = 1
-                elif len(vector2) == 0: score = 0.3
+                if len(vector1) == 0: score = 0.5
+                elif len(vector2) == 0: score = 0.2
                 else: score = every_multi_score(vector1, vector2, 'mean')
             else:
-                if len(vector1) == 0 or len(vector2) == 0: score = 1
+                if len(vector1) == 0 or len(vector2) == 0: score = 0.5
                 else: score = every_multi_score(vector1, vector2, 'max')
         elif key == 'job_wage':
             sentence1 = np.mean(sentence1)

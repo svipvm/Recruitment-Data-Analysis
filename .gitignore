@@ -7,3 +7,5 @@ record/*
 *.csv
 *.bin
 *.html
+
+!position_type.json

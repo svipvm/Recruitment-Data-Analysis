@@ -3,7 +3,7 @@ import cpca, re, json, torch, pickle, os
 import numpy as np
 import pandas as pd
 
-DEBUG = True
+DEBUG = False
 
 require_edu_re_json = {'不限': 0, '技工': 1, '大专': 2, '本科': 3, '硕士': 4, '博士': 5}
 level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
@@ -140,7 +140,8 @@ both_score_info_bak = _read_database(BOTH_SCORE_INFO_BAK_FILE, DEBUG)
 # exists_obj_id = {}
 modified_obj = {}
 
-BASE_MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
+# BASE_MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
+BASE_MODEL_PATH = 'models/model_zoo/medium'
 # BASE_MODEL_PATH = 'C:\\Users\\vmice\\.cache\\torch\\sentence_transformers\\uer_sbert-base-chinese-nli'
 # model = SentenceTransformer(BASE_MODEL_PATH)
 
@@ -705,9 +706,9 @@ def _get_origin_item(type_id, obj_key, obj_index):
 def save_score_to_csv(type_id, scores, save_csv_file):
     assert len(scores.shape) == 2
     if type_id == 0:
-        json_data = {"招聘信息 ID":[], "求职者 ID":[], "岗位匹配度": []}
+        json_data = {"招聘信息ID":[], "求职者ID":[], "岗位匹配度": []}
     else:
-        json_data = {"求职者 ID":[], "招聘信息 ID":[], "公司名称": [], "求职者满意度": []}
+        json_data = {"求职者ID":[], "招聘信息ID":[], "公司名称": [], "求职者满意度": []}
     main_index_len, vice_index_len = scores.shape[:2]
     sorted_index = np.argsort(-scores.reshape(1, -1)[0])
     x_indexs, y_indexs = np.unravel_index(sorted_index, scores.shape)
@@ -719,12 +720,12 @@ def save_score_to_csv(type_id, scores, save_csv_file):
         x_key = _get_obj_key_by_index(type_id, x_index)
         y_key = _get_obj_key_by_index(type_id ^ 1, y_index)
         if type_id == 0:
-            json_data['招聘信息 ID'].append('\t' + str(x_key))
-            json_data['求职者 ID'].append('\t' + str(y_key))
+            json_data['招聘信息ID'].append('\t' + str(x_key))
+            json_data['求职者ID'].append('\t' + str(y_key))
             json_data['岗位匹配度'].append(score)
         elif type_id == 1:
-            json_data['求职者 ID'].append('\t' + str(x_key))
-            json_data['招聘信息 ID'].append('\t' + str(y_key))
+            json_data['求职者ID'].append('\t' + str(x_key))
+            json_data['招聘信息ID'].append('\t' + str(y_key))
             json_data['公司名称'].append(_get_origin_item(0, y_key, 'company_full_name'))
             json_data['求职者满意度'].append(score)
 

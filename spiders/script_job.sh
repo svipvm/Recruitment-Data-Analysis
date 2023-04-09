@@ -1,0 +1,1 @@
+python ./spider_job.py 2>&1 > ./spider_job.out

@@ -96,10 +96,10 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                         sentence[idx] = re.sub(r'(第\w+届|全国|校园|中国|国际)*', '', sentence[idx])
 
                         # weight = re.findall(r'^\w+\[(\w+)\]:', text)
-                        weight = re.findall(r'^\w+\[(\w+)(、|\])', text)
+                        weight = re.findall(r'^\w+\[(.*?)(、|\])', text)
                         if len(weight) != 0: weight = weight[0][0]
-                        grades = re.findall(r'((一|二|三|)等奖|(优秀)奖|(\w)牌)', weight)
-                        grade_map = {'一': 0.4, '二': 0.3, '三': 0.2, '优秀': 0.1, 
+                        grades = re.findall(r'((一|二|三|)等奖|优(秀|胜)奖|(\w)牌)', weight)
+                        grade_map = {'一': 0.4, '二': 0.3, '三': 0.2, '秀': 0.1, '胜': 0.1, 
                                      '金': 0.4, '银': 0.3, '铜': 0.2}
                         # print(grades)
                         if len(grades) > 0:
@@ -211,11 +211,14 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
         equal_vector = equal_field_dict[vice_obj_name][key]['vector']
 
         # print(len(main_vector))
-        if len(vice_vector) == 0: continue
-        main_vector_index = query_top_k_index(main_vector, equal_vector, k_rate=0.3)
-        # print(main_vector_index)
-        if len(main_vector_index) == 0: continue
-        score = every_multi_score(main_vector[main_vector_index], vice_vector, 'weights', weights)
+        try:
+            if len(vice_vector) == 0: continue
+            main_vector_index = query_top_k_index(main_vector, equal_vector, k_rate=0.3)
+            # print(main_vector_index)
+            if len(main_vector_index) == 0: continue
+            score = every_multi_score(main_vector[main_vector_index], vice_vector, 'weights', weights)
+        except Exception as e:
+            print(e, len(main_vector))
         # score = 0.5
     #     vice_item = vice_obj[key]
     #     sentence1, sentence2 = main_item['sentence'], vice_item['sentence']

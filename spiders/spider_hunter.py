@@ -19,6 +19,9 @@ def delete_wrap(text):
 def delete_blank(text):
     return text.replace(' ', '')
 
+def delete_slash(text):
+    return text.replace('\\', '')
+
 def delete_con(text):
     try:
         return delete_blank(delete_wrap(text))
@@ -45,14 +48,14 @@ def get_one_hunter_information(data_json):
         'hunter_exp': data['exp'],
         'hunter_soci': data['politicalStatus'],
         'hunter_eval': delete_con(data['selfEvaluation']),
-        'exp_position': string_to_list(data['expectPosition']),
+        'exp_position': string_to_list(delete_con(data['expectPosition'])),
         'exp_min_wage': data['willSalaryStart'],
         'exp_max_wage': data['willSalaryEnd'],
         # 'exp_wage_kind': data['willNature'],
         # attachmentList
         'exp_require_kind': data['willNature'],
-        'exp_industry': string_to_list(data['expectIndustry']),
-        'exp_city': ''.join(string_to_list(data['city'])),
+        'exp_industry': string_to_list(delete_con(data['expectIndustry'])),
+        'exp_city': ''.join(string_to_list(delete_con(data['city']))),
         'exp_report': data['arrivalTime'],
         'resume_keys': [item['labelName'] for item in data['keywordList']],
         'job_exps': ['{}[{}]:{}'.format(

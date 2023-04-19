@@ -85,7 +85,7 @@ def get_all_work_information():
         time.sleep(0.1)
         
         if last_flag: break
-
+    print('Successfully obtained {}/{} elements'.format(num_elements, total_elements))
 
 if __name__ == '__main__':
     info_csv_path = '../datasets/recruitment-info.csv'

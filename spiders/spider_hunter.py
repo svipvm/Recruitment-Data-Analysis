@@ -24,7 +24,7 @@ def delete_slash(text):
 
 def delete_con(text):
     try:
-        return delete_blank(delete_wrap(text))
+        return delete_slash(delete_blank(delete_wrap(text)))
     except:
         return ''
 
@@ -44,7 +44,7 @@ def get_one_hunter_information(data_json):
         'hunter_name': data['username'],
         'hunter_sex': data['gender'],
         'hunter_bthday': data['birthday'],
-        'hunter_addr': ''.join(string_to_list(data['address'])),
+        'hunter_addr': ''.join(string_to_list(delete_con(data['address']))),
         'hunter_exp': data['exp'],
         'hunter_soci': data['politicalStatus'],
         'hunter_eval': delete_con(data['selfEvaluation']),
@@ -111,6 +111,7 @@ def get_all_work_information():
         time.sleep(0.3)
         
         if last_flag: break
+        print('Successfully obtained {}/{} elements'.format(num_elements, total_elements))
 
 
 if __name__ == '__main__':

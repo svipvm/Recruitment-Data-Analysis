@@ -1,0 +1,17 @@
+cpca==0.5.5
+huggingface-hub==0.13.4
+jieba==0.42.1
+matplotlib==3.7.1
+networkx==3.1
+numpy==1.23.5
+pandas==2.0.0
+pyecharts==2.0.3
+requests==2.28.1
+scikit-learn==1.2.2
+scipy==1.10.1
+sentence-transformers==2.2.2
+sentencepiece==0.1.98
+tokenizers==0.13.3
+torch==1.12.0
+torchvision==0.13.0
+transformers==4.28.1

@@ -12,8 +12,3 @@ OPPO-xiaobu             小布对话文本语义匹配数据集    https://tianc
 PAWS-X                  谷歌 PAWS-X 数据集           https://github.com/google-research-datasets/paws
 PKU-Paraphrase-Bank     北大中文文本复述数据集        https://github.com/pkucoli/PKU-Paraphrase-Bank/
 
-# 将数据集从json（jsonl）转换为tsv的脚本的使用方法
-
-```
-python json2tsv.py [simClue/mnli/snli/CTI] [dataset1-path] [dataset2-path] ... [output-path]
-```

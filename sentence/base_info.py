@@ -104,6 +104,7 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
                 encode_result[obj_id][key]['vector'] = base_model.encode(encode_result[obj_id][key]['sentence'])
         set_info_item('base', obj_type, obj_id, encode_result[obj_id])
     else:
+        # print(obj_type, obj_id)
         encode_result[obj_id] = get_info_item('base', obj_type, obj_id)
     set_index_by_object_id(obj_type, obj_id)
 

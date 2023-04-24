@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer, util
-import cpca, re, json, torch, pickle, os
+import cpca, re, json, torch, pickle, os, hashlib
 import numpy as np
 import pandas as pd
 
@@ -10,8 +10,8 @@ level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
 
 equal_field_dict = {} # field_key {sentence: ..., vector: ...}
 
-JOB_CSV_FILE = 'datasets/recruitment-info.csv'
-HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
+JOB_CSV_FILE = 'datasets/recruitment-info-bak.csv'
+HUNTER_CSV_FILE = 'datasets/hunter-info-bak.csv'
 # job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
 # hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
 # job_data, hunter_data = get_both_data()
@@ -339,7 +339,9 @@ def _dict_object_encode(info_id, info_dict: dict):
         - info_dict: Content information map
     Returns: Returns information that contain the primary key
     '''
-    return '。'.join([info_id] + [str(value['sentence']) for _, value in info_dict.items()])
+    # return '-'.join(["PREFIX" + info_id] + [str(value['sentence']) for _, value in info_dict.items()])
+    return hashlib.sha256('-'.join(["PREFIX" + info_id] + [str(value['sentence']) for _, value in info_dict.items()]
+                           ).encode('utf8')).hexdigest()
 
 def _record_is_modified(obj_type, obj_id):
     '''
@@ -386,12 +388,14 @@ def is_modified_info_item(data_name, obj_type, info_id, info_dict):
 
     if info_id not in info_bak:
         _record_is_modified(obj_type, info_id)
+        # print(1, info_id)
         return True
     else:
         item_value = _dict_object_encode(info_id, info_dict)
         item_bak_value = _dict_object_encode(info_id, info_bak[info_id])
         modified = (item_bak_value != item_value)
         if modified: _record_is_modified(obj_type, info_id)
+        # print(0, info_id, )
         return modified
 
 def get_info_item(data_name, obj_type, info_id):

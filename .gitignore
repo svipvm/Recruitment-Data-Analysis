@@ -9,3 +9,5 @@ record/*
 *.html
 
 !position_type.json
+!config.json
+!tokenizer_config.json

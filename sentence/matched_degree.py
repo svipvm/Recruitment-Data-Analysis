@@ -11,22 +11,26 @@ MAIN_HUNTER_CSV_FILE = 'datasets/result3-2.csv'
 
 if __name__ == '__main__':
     start_time = time.time()
-    # size = job_data.shape[0]
     # ==================================== Begin: Base Score ====================================
-    job_size = job_data.shape[0]
+    # job_size = job_data.shape[0]
+    job_size = 99
     for index_ in tqdm(range(job_size), desc='Job-Base-Info'):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
     save_info_database('base', 0, job_base_dict)
-    print("Save successfully for job base infomation.")
+    print("Save successfully for {}/{} job base infomations.".format(
+        len(job_base_dict), job_size
+    ))
 
-    # size = hunter_data.shape[0]
-    hunter_size = hunter_data.shape[0]
+    # hunter_size = hunter_data.shape[0]
+    hunter_size = 101
     for index_ in tqdm(range(hunter_size), desc='Hunter-Base-Info'):
         hunter = hunter_data.iloc[index_,:]
         encode_base_data(hunter, 1, hunter_base_dict)
     save_info_database('base', 1, hunter_base_dict)
-    print("Save successfully for hunter base infomation.")
+    print("Save successfully for {}/{} hunter base infomations.".format(
+        len(hunter_base_dict), hunter_size
+    ))
 
     save_both_info_map_database()
     expand_score_database()

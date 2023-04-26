@@ -20,14 +20,14 @@ base_dict = {
     'skill_keys': (['skill_keys'], ['skill_exps'])
 }
 base_score_weights = {
-    'pos_name': 3,
-    'job_wage': 2,
-    'job_kind': 3,
-    'exp_edu': 2,
-    'job_years': 2,
+    'pos_name': 10,
+    'job_wage': 3,
+    'job_kind': 2,
+    'exp_edu': 5,
+    'job_years': 1,
     'pos_keys': 3,
     'cor_addr': 2,
-    'skill_keys': 3,
+    'skill_keys': 5,
 }
 base_score_sum = np.sum([weight for _, weight in base_score_weights.items()])
 for key, weight in base_score_weights.items():

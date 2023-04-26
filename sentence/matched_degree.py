@@ -5,15 +5,15 @@ from main_info import *
 from extra_info import *
 
 os.makedirs('datasets', exist_ok=True)
-MAIN_JOB_CSV_FILE = 'datasets/result3-1.csv'
-MAIN_HUNTER_CSV_FILE = 'datasets/result3-2.csv'
+MAIN_JOB_CSV_FILE = 'datasets/result3-1-bak.csv'
+MAIN_HUNTER_CSV_FILE = 'datasets/result3-2-bak.csv'
 
 
 if __name__ == '__main__':
     start_time = time.time()
     # ==================================== Begin: Base Score ====================================
-    # job_size = job_data.shape[0]
-    job_size = 99
+    job_size = job_data.shape[0]
+    # job_size = 99
     for index_ in tqdm(range(job_size), desc='Job-Base-Info'):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
@@ -22,8 +22,8 @@ if __name__ == '__main__':
         len(job_base_dict), job_size
     ))
 
-    # hunter_size = hunter_data.shape[0]
-    hunter_size = 101
+    hunter_size = hunter_data.shape[0]
+    # hunter_size = 101
     for index_ in tqdm(range(hunter_size), desc='Hunter-Base-Info'):
         hunter = hunter_data.iloc[index_,:]
         encode_base_data(hunter, 1, hunter_base_dict)

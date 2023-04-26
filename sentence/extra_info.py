@@ -213,7 +213,7 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
         # print(len(main_vector))
         try:
             if len(vice_vector) == 0: continue
-            main_vector_index = query_top_k_index(main_vector, equal_vector, k_rate=0.7)
+            main_vector_index = query_top_k_index(main_vector, equal_vector, k_rate=0.3)
             # print(main_vector_index)
             if len(main_vector_index) == 0: continue
             score = every_multi_score(main_vector[main_vector_index], vice_vector, 'weights', weights)

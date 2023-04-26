@@ -10,8 +10,8 @@ level_json = {'COMMONLY': 1, 'GOOD': 2, 'SKILLED': 3, 'MASTER': 4}
 
 equal_field_dict = {} # field_key {sentence: ..., vector: ...}
 
-JOB_CSV_FILE = 'datasets/recruitment-info-bak.csv'
-HUNTER_CSV_FILE = 'datasets/hunter-info-bak.csv'
+JOB_CSV_FILE = 'datasets/recruitment-info.csv'
+HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
 # job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
 # hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
 # job_data, hunter_data = get_both_data()
@@ -681,7 +681,7 @@ def get_scores_by_type(type_id):
     main_score = scores[..., 1]
     extra_score = scores[..., 2]
 
-    scores = (base_score > 0.3).astype(np.int32) * (0.7 * main_score + 0.3 * extra_score)
+    scores = (base_score >= 0.1).astype(np.int32) * (0.8 * main_score + 0.2 * extra_score)
     # scores = (scores > 0.3).astype(np.int32) * scores
     
     return scores

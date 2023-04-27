@@ -93,10 +93,10 @@ def calc_main_score(obj_type: int, main_obj: dict, vice_obj: dict):
         if key in WITH_ENCODE_ITEMS:
             vector1, vector2 = main_item['vector'], vice_item['vector']
             if obj_type == 0: 
-                if len(vector1) == 0 or len(vector2) == 0: score = 0.1
+                if len(vector1) == 0 or len(vector2) == 0: score = 0.5
                 else: score = every_multi_score(vector1, vector2, 'mean')
             else:
-                if len(vector1) == 0 or len(vector2) == 0: score = 0.1
+                if len(vector1) == 0 or len(vector2) == 0: score = 0.5
                 else: score = every_multi_score(vector1, vector2, 'k-mean')
         if score < 1e-8: score = 0
         main_score += score * main_score_weights[key]

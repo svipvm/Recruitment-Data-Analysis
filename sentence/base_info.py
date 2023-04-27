@@ -20,7 +20,7 @@ base_dict = {
     'skill_keys': (['skill_keys'], ['skill_exps'])
 }
 base_score_weights = {
-    'pos_name': 10,
+    'pos_name': 15,
     'job_wage': 3,
     'job_kind': 2,
     'exp_edu': 5,
@@ -65,7 +65,10 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
                 encode_result[obj_id] = {}
             elif key == 'pos_name':
                 sentence = try_to_eval(sentence[0])
-                sentence = [word.replace('实习生', '') for word in sentence]
+                sentence = '/'.join(sentence)
+                sentence = sentence.replace('实习生', '')
+                # sentence = [word.replace('实习生', '') for word in sentence]
+                # print(obj_type, obj_id, sentence)
             elif key == 'job_wage':
                 sentence = change_wage(*sentence)
             elif key == 'job_kind':
@@ -121,7 +124,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
         - vice_obj: vice object
     Returns: The basic score
     '''
-    pos_name_threshold = 0.35
+    pos_name_threshold = 0.8
     base_score = 0.0
 
     for key, main_item in main_obj.items():
@@ -132,7 +135,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
             vector1, vector2 = main_item['vector'], vice_item['vector']
             if obj_type == 0:
                 if len(vector1) == 0: score = 0.5
-                elif len(vector2) == 0: score = 0.2
+                elif len(vector2) == 0: score = 0.5
                 else: score = every_multi_score(vector1, vector2, 'mean')
             else:
                 if len(vector1) == 0 or len(vector2) == 0: score = 0.5
@@ -147,7 +150,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
             score = float(sentence1 == sentence2)
         elif key == 'exp_edu':
             if obj_type == 0:
-                score = 0.2 if len(sentence2) == 0 else float(
+                score = 0.5 if len(sentence2) == 0 else float(
                             get_max_edu_level(sentence1, require_edu_re_json) <= \
                                 get_max_edu_level(sentence2, require_edu_re_json))
             else:
@@ -165,7 +168,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
                 if re.findall(r'(.*)市', sentence1) == re.findall(r'(.*)市', sentence2):
                     score = 1
             else:
-                score = 0.2
+                score = 0.5
 
         if score <= 1e-6 or (key == 'pos_name' and score < pos_name_threshold): return 0
         base_score += score * base_score_weights[key]

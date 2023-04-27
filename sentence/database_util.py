@@ -681,7 +681,7 @@ def get_scores_by_type(type_id):
     main_score = scores[..., 1]
     extra_score = scores[..., 2]
 
-    scores = (base_score >= 0.1).astype(np.int32) * (0.8 * main_score + 0.2 * extra_score)
+    scores = (base_score >= 0.3).astype(np.int32) * (0.7 * main_score + 0.3 * extra_score)
     # scores = (scores > 0.3).astype(np.int32) * scores
     
     return scores

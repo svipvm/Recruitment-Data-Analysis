@@ -13,7 +13,7 @@ if __name__ == '__main__':
     start_time = time.time()
     # ==================================== Begin: Base Score ====================================
     job_size = job_data.shape[0]
-    # job_size = 51
+    # job_size = 200
     for index_ in tqdm(range(job_size), desc='Job-Base-Info'):
         job = job_data.iloc[index_,:]
         encode_base_data(job, 0, job_base_dict)
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     ))
 
     hunter_size = hunter_data.shape[0]
-    # hunter_size = 49
+    # hunter_size = 500
     for index_ in tqdm(range(hunter_size), desc='Hunter-Base-Info'):
         hunter = hunter_data.iloc[index_,:]
         encode_base_data(hunter, 1, hunter_base_dict)
@@ -38,6 +38,7 @@ if __name__ == '__main__':
     # print(len(main_job_info_bak))
     
     result = []
+    none_zero_count = 0
     for key1, job_item in tqdm(job_base_dict.items(), desc='Job-Base-Score'):
         part_result = []
         valid_job = info_is_modified(0, key1)
@@ -50,10 +51,13 @@ if __name__ == '__main__':
                 set_score_by_multi_id(0, key1, key2, 0, base_score)
             else:
                 base_score = get_score_by_multi_id(0, key1, key2, 0)
+            # if base_score > 1e-6: none_zero_count += 1
+            # print(key1, job_item['pos_name']['sentence'], key2, hunter_item['pos_name']['sentence'], base_score)
             # part_result.append(base_score)
-                
         #     break
         # result.append(part_result)
+    # print("The number of non-zero basic fractions is: {}/{}".format(
+    #     none_zero_count, len(job_base_dict)))
 
     # for inx, (job_id, job_info) in enumerate(job_base_dict.items()):
     # # for _, (hunter_id, hunter_info) in enumerate(hunter_base_dict.items()):

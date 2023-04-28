@@ -88,9 +88,7 @@ def get_all_work_information():
     while True:
         response = requests.get(base_url.format(num_page))
         data = json.loads(response.text)['data']
-        # print(data['content'])
-
-        # num_elements += data['pageable']['pageSize']
+        
         total_elements = data['totalElements']
         total_pages = data['totalPages']
         last_flag = data['last']

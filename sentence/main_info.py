@@ -9,8 +9,7 @@ WITH_ENCODE_ITEMS = ['require']
 main_dict = {
     'id': (['job_id'], ['hunter_id']),
     'require': (['job_require'], ['hunter_eval', 'job_exps', 'project_exps'])
-    # 'require': (['job_require'], ['hunter_eval', 'job_exps', 'project_exps', 'competition_exps', 
-    #             'education_exps', 'training_exps', 'skill_exps', 'language_exps', 'cert_exps'])
+    
 }
 main_score_weights = {
     'require': 1,
@@ -37,23 +36,19 @@ def encode_main_data(obj, obj_type: int, dict_data: dict):
     '''
     assert obj_type == 0 or obj_type == 1
 
-    # {id: {sentence: ...}, pos_name: {sentence: ..., vector: ...}, ...}
+
     encode_result = {} 
     for key, value in main_dict.items():
         value = value[obj_type]
         try:
             sentence = obj[value].values.tolist()
-            # print(key, type(sentence), sentence)
-            # print(key)
             
             if key == 'id':
                 obj_id = str(sentence[0])
                 encode_result[obj_id] = {}
             elif key == 'require':
-                # print(ojb_id, len(sentence))
                 sentence = multi_index_to_one(sentence)
                 sentence = parse_long_text_list(sentence)
-                # print(len(sentence), sentence)
             
             if key != 'id':
                 encode_result[obj_id][key] = {}
@@ -62,7 +57,6 @@ def encode_main_data(obj, obj_type: int, dict_data: dict):
         except Exception as e:
             print(key, e)
         
-    # print(base_object_encode(ojb_id, encode_result[ojb_id]))
     if is_modified_info_item('main', obj_type, obj_id, encode_result[obj_id]):
         for key, value in main_dict.items():
             if key in WITH_ENCODE_ITEMS:

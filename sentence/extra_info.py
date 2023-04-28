@@ -1,6 +1,6 @@
 import re, time
 import numpy as np
-# sys.path.append('sentence')
+
 from database_util import *
 import traceback
 from tqdm import tqdm
@@ -69,13 +69,9 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
     # {id: {sentence: ...}, pos_name: {sentence: ..., vector: ...}, ...}
     encode_result = {} 
     for key, value in extra_dict.items():
-        # value = value[obj_type]
         index_key, equal_words = key, value
         try:
-            # print(index_key, obj)
             sentence = obj[index_key]
-            # print(index_key == 'hunter_id', key, type(sentence), sentence)
-            # print(key, sentence)
             
             if index_key == 'job_id' or index_key == 'hunter_id':
                 obj_id = str(sentence)
@@ -101,11 +97,9 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                         grades = re.findall(r'((一|二|三|)等奖|优(秀|胜)奖|(\w)牌)', weight)
                         grade_map = {'一': 0.4, '二': 0.3, '三': 0.2, '秀': 0.1, '胜': 0.1, 
                                      '金': 0.4, '银': 0.3, '铜': 0.2}
-                        # print(grades)
+                        
                         if len(grades) > 0:
-                            # print(grades[0])
                             grades = [grade for grade in grades[0] if len(grade) > 0]
-                            # print(grades)
                             try:
                                 grade = grade_map[grades[1]]
                             except:
@@ -114,9 +108,8 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                             grade = 0
                         if '全国' in text: grade += 0.5
                         weights.append(grade)
-                    # print(weights)
+                        
                     elif index_key == 'education_exps':
-                    # for idx, text in enumerate(sentence):
                         sentence[idx] = re.sub(r'^\w+\[\w+\]:', '', text)
 
                         weight = re.findall(r'^\w+\[(\w+)\]:', text)
@@ -125,14 +118,12 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                             grade = require_edu_re_json[weight]
                         except:
                             grade = 0
-                        # print(weight)
+                            
                         weights.append(grade)
                     elif index_key == 'training_exps':
-                    # for idx, text in enumerate(sentence): 
                         sentence[idx] = re.findall(r'\[(\w+)\]', text)[0]
                         weights.append(0.8)
                     elif index_key == 'skill_exps' or index_key == 'language_exps':
-                    # for idx, text in enumerate(sentence): 
                         sentence[idx] = re.sub(r'\[(\w+)\]', '', text)
                         weight = re.findall(r'\[(\w+)\]', text)
                         if len(weight) != 0: weight = weight[0]
@@ -142,13 +133,9 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
                             grade = 0
                         weights.append(grade)
                     elif index_key == 'cert_exps':
-                    # for idx, text in enumerate(sentence):
                         sentence[idx] = re.sub(r'\[(\w+)\]', '', text)
                         weights.append(0.6)
-                # else:
-                #     pass
             
-            # if index_key != ['job_id', 'hunter_id']:
             encode_result[obj_id][index_key] = {}
             encode_result[obj_id][index_key]['sentence'] = sentence
             encode_result[obj_id][index_key]['weights'] = weights
@@ -157,8 +144,6 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
             print(obj_id, key, weight, e)
             traceback.print_exc()
     
-    # print(encode_result)
-    # print(base_object_encode(ojb_id, encode_result[ojb_id]))
     if is_modified_info_item('extra', obj_type, obj_id, encode_result[obj_id]):
         for key, value in extra_dict.items():
             if key in ['job_id', 'hunter_id']: continue
@@ -166,7 +151,6 @@ def encode_extra_data(obj, obj_type: int, dict_data: dict):
         set_info_item('extra', obj_type, obj_id, encode_result[obj_id])
     else:
         encode_result[obj_id] = get_info_item('extra', obj_type, obj_id)
-    # set_index_by_object_id(obj_type, ojb_id)
 
     dict_data.update(encode_result)
 
@@ -193,46 +177,22 @@ def calc_extra_score(obj_type: int, main_vector, vice_id, vice_obj: dict):
     '''
     vice_obj_name = 'job' if obj_type == 1 else 'hunter'
     score_weights = extra_job_score_weights if obj_type == 1 else extra_hunter_score_weights
-    # if obj_type == 0:
-    #     item_base_score = 1 / (len(field_for_hunter) - 1)
-    # else:
-    #     item_base_score = 1 / (len(field_for_job) - 1)
     extra_score = 0.0
-    # main_sentence, main_vector = get_extra_sentence_and_vector(obj_type, main_id)
-    # if main_vector is None: main_vector = model.encode(main_sentence)
-    # print(main_sentence, len(main_vector))
-    # vice_dict = job_extra_dict if obj_type == 1 else hunter_extra_dict
 
     for key, vice_item in vice_obj.items():
-        # print(key, len(vice_item))
         sentence = vice_item['sentence']
         weights = vice_item['weights']
         vice_vector = vice_item['vector']
         equal_vector = equal_field_dict[vice_obj_name][key]['vector']
 
-        # print(len(main_vector))
         try:
             if len(vice_vector) == 0: continue
             main_vector_index = query_top_k_index(main_vector, equal_vector, k_rate=0.3)
-            # print(main_vector_index)
             if len(main_vector_index) == 0: continue
             score = every_multi_score(main_vector[main_vector_index], vice_vector, 'weights', weights)
         except Exception as e:
             print(e, len(main_vector))
-        # score = 0.5
-    #     vice_item = vice_obj[key]
-    #     sentence1, sentence2 = main_item['sentence'], vice_item['sentence']
 
-    #     # if key ontin WITH_ENCODE_ITEMS:
-    #     vector1, vector2 = main_item['vector'], vice_item['vector']
-    #     if obj_type == 0: 
-    #         if len(vector1) == 0 or len(vector2) == 0: score = 0.1
-    #         else: score = every_multi_score(vector1, vector2, 'mean')
-    #     else:
-    #         if len(vector1) == 0 or len(vector2) == 0: score = 0.1
-    #         else: score = every_multi_score(vector1, vector2, 'k-mean')
-        
-        # extra_score += item_base_score * score
         if score < 1e-8: score = 0
         extra_score += score * score_weights[key]
 

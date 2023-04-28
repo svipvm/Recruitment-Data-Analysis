@@ -37,8 +37,6 @@ if DEBUG: print('base score weights:\n', '\t', base_score_weights)
 job_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 hunter_base_dict = {} # id_key: {sentence: ..., vector: ..., }
 
-# base_score_for_job = {} # {}
-# base_score_for_hunter = {}
 base_model = get_model('base')
 
 def encode_base_data(obj, obj_type: int, dict_data: dict):
@@ -65,10 +63,7 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
                 encode_result[obj_id] = {}
             elif key == 'pos_name':
                 sentence = try_to_eval(sentence[0])
-                sentence = '/'.join(sentence)
-                sentence = sentence.replace('实习生', '')
-                # sentence = [word.replace('实习生', '') for word in sentence]
-                # print(obj_type, obj_id, sentence)
+                sentence = [work for work in sentence if '其他' not in work]
             elif key == 'job_wage':
                 sentence = change_wage(*sentence)
             elif key == 'job_kind':
@@ -100,14 +95,12 @@ def encode_base_data(obj, obj_type: int, dict_data: dict):
         except Exception as e:
             print(key, e)
         
-    # print(base_object_encode(ojb_id, encode_result[ojb_id]))
     if is_modified_info_item('base', obj_type, obj_id, encode_result[obj_id]):
         for key, value in base_dict.items():
             if key in WITH_ENCODE_ITEMS:
                 encode_result[obj_id][key]['vector'] = base_model.encode(encode_result[obj_id][key]['sentence'])
         set_info_item('base', obj_type, obj_id, encode_result[obj_id])
     else:
-        # print(obj_type, obj_id)
         encode_result[obj_id] = get_info_item('base', obj_type, obj_id)
     set_index_by_object_id(obj_type, obj_id)
 
@@ -124,7 +117,7 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
         - vice_obj: vice object
     Returns: The basic score
     '''
-    pos_name_threshold = 0.8
+    pos_name_threshold = 0.6
     base_score = 0.0
 
     for key, main_item in main_obj.items():
@@ -133,13 +126,13 @@ def calc_base_score(obj_type: int, main_obj: dict, vice_obj: dict):
 
         if key in WITH_ENCODE_ITEMS:
             vector1, vector2 = main_item['vector'], vice_item['vector']
-            if obj_type == 0:
-                if len(vector1) == 0: score = 0.5
-                elif len(vector2) == 0: score = 0.5
-                else: score = every_multi_score(vector1, vector2, 'mean')
-            else:
-                if len(vector1) == 0 or len(vector2) == 0: score = 0.5
-                else: score = every_multi_score(vector1, vector2, 'max')
+            # if obj_type == 0:
+            #     if len(vector1) == 0: score = 0.5
+            #     elif len(vector2) == 0: score = 0.5
+            #     else: score = every_multi_score(vector1, vector2, 'mean')
+            # else:
+            if len(vector1) == 0 or len(vector2) == 0: score = 0.5
+            else: score = every_multi_score(vector1, vector2, 'max')
         elif key == 'job_wage':
             sentence1 = np.mean(sentence1)
             sentence2 = np.mean(sentence2)

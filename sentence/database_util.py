@@ -12,9 +12,6 @@ equal_field_dict = {} # field_key {sentence: ..., vector: ...}
 
 JOB_CSV_FILE = 'datasets/recruitment-info.csv'
 HUNTER_CSV_FILE = 'datasets/hunter-info.csv'
-# job_data = pd.read_csv(JOB_CSV_FILE, encoding='GBK')
-# hunter_data = pd.read_csv(HUNTER_CSV_FILE, encoding='GBK')
-# job_data, hunter_data = get_both_data()
 
 os.makedirs('database', exist_ok=True)
 def _read_database(data_file, json_type=True):
@@ -40,110 +37,36 @@ def _save_database(data_file, data_dict, json_type=True):
          with open(data_file + '.data', 'wb') as f:
             pickle.dump(data_dict, f)
 
-# todo: convert json to pickle
-# BASE_JOB_INFO_BAK_FILE = 'database/base_job_info.json'
 BASE_JOB_INFO_BAK_FILE = 'database/base_job_info'
 base_job_info_bak = _read_database(BASE_JOB_INFO_BAK_FILE, DEBUG)
-# base_job_info_bak = {}
-# try:
-#     # with open(BASE_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     base_job_info_bak = json.loads(f.read())
-#     base_job_info_bak = _read_database(BASE_JOB_INFO_BAK_FILE, DEBUG)
-#     print(BASE_JOB_INFO_BAK_FILE, 'size:', len(base_job_info_bak))
-# except Exception as e:
-#     print(BASE_JOB_INFO_BAK_FILE, 'lost, record again!')
 
-# BASE_HUNTER_INFO_BAK_FILE = 'database/base_hunter_info.json'
 BASE_HUNTER_INFO_BAK_FILE = 'database/base_hunter_info'
 base_hunter_info_bak = _read_database(BASE_HUNTER_INFO_BAK_FILE, DEBUG)
-# base_hunter_info_bak = {}
-# try:
-#     # with open(BASE_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     base_hunter_info_bak = json.loads(f.read())
-#     base_hunter_info_bak = _read_database(BASE_HUNTER_INFO_BAK_FILE, DEBUG)
-#     print(BASE_HUNTER_INFO_BAK_FILE, 'size:', len(base_hunter_info_bak))
-# except Exception as e:
-#     print(BASE_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
-# MAIN_JOB_INFO_BAK_FILE = 'database/main_job_info.json'
 MAIN_JOB_INFO_BAK_FILE = 'database/main_job_info'
 main_job_info_bak = _read_database(MAIN_JOB_INFO_BAK_FILE, DEBUG)
-# main_job_info_bak = {}
-# try:
-#     # with open(MAIN_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     main_job_info_bak = json.loads(f.read())
-#     main_job_info_bak = _read_database(MAIN_JOB_INFO_BAK_FILE, DEBUG)
-#     print(MAIN_JOB_INFO_BAK_FILE, 'size:', len(main_job_info_bak))
-# except Exception as e:
-#     print(MAIN_JOB_INFO_BAK_FILE, 'lost, record again!')
 
-# MAIN_HUNTER_INFO_BAK_FILE = 'database/main_hunter_info.json'
 MAIN_HUNTER_INFO_BAK_FILE = 'database/main_hunter_info'
 main_hunter_info_bak = _read_database(MAIN_HUNTER_INFO_BAK_FILE, DEBUG)
-# main_hunter_info_bak = {}
-# try:
-#     # with open(MAIN_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     main_hunter_info_bak = json.loads(f.read())
-#     main_hunter_info_bak = _read_database(MAIN_HUNTER_INFO_BAK_FILE, DEBUG)
-#     print(MAIN_HUNTER_INFO_BAK_FILE, 'size:', len(main_hunter_info_bak))
-# except Exception as e:
-#     print(MAIN_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
-# EXTRA_JOB_INFO_BAK_FILE = 'database/extra_job_info.json'
 EXTRA_JOB_INFO_BAK_FILE = 'database/extra_job_info'
 extra_job_info_bak = _read_database(EXTRA_JOB_INFO_BAK_FILE, DEBUG)
-# extra_job_info_bak = {}
-# try:
-#     # with open(EXTRA_JOB_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     extra_job_info_bak = json.loads(f.read())
-#     extra_job_info_bak = _read_database(EXTRA_JOB_INFO_BAK_FILE, DEBUG)
-#     print(EXTRA_JOB_INFO_BAK_FILE, 'size:', len(extra_job_info_bak))
-# except Exception as e:
-#     print(EXTRA_JOB_INFO_BAK_FILE, 'lost, record again!')
 
-# EXTRA_HUNTER_INFO_BAK_FILE = 'database/extra_hunter_info.json'
 EXTRA_HUNTER_INFO_BAK_FILE = 'database/extra_hunter_info'
 extra_hunter_info_bak = {}
 extra_hunter_info_bak = _read_database(EXTRA_HUNTER_INFO_BAK_FILE, DEBUG)
-# try:
-#     # with open(EXTRA_HUNTER_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     extra_hunter_info_bak = json.loads(f.read())
-#     extra_hunter_info_bak = _read_database(EXTRA_HUNTER_INFO_BAK_FILE, DEBUG)
-#     print(EXTRA_HUNTER_INFO_BAK_FILE, 'size:', len(extra_hunter_info_bak))
-# except Exception as e:
-#     print(EXTRA_HUNTER_INFO_BAK_FILE, 'lost, record again!')
 
-# BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map.json'
 BOTH_INFO_MAP_BAK_FILE = 'database/both_info_map'
 both_info_map_bak = _read_database(BOTH_INFO_MAP_BAK_FILE, DEBUG)
-# both_info_map_bak = {}
-# try:
-#     # with open(BOTH_INFO_MAP_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     both_info_map_bak = json.loads(f.read())
-#     both_info_map_bak = _read_database(BOTH_INFO_MAP_BAK_FILE, DEBUG)
-#     print(BOTH_INFO_MAP_BAK_FILE, 'size:', len(both_info_map_bak))
-# except Exception as e:
-#     print(BOTH_INFO_MAP_BAK_FILE, 'lost, record again!')
+
 _max_index_for_both_info = [-1, -1]
 
-# BOTH_SCORE_INFO_BAK_FILE = 'database/both_score_info.json'
 BOTH_SCORE_INFO_BAK_FILE = 'database/both_score_info'
 both_score_info_bak = _read_database(BOTH_SCORE_INFO_BAK_FILE, DEBUG)
-# both_score_info_bak = {}
-# try:
-#     # with open(BOTH_SCORE_INFO_BAK_FILE, 'r', encoding='GBK') as f:
-#     #     both_score_info_bak = json.loads(f.read())
-#     both_score_info_bak = _read_database(BOTH_SCORE_INFO_BAK_FILE, DEBUG)
-#     print(BOTH_SCORE_INFO_BAK_FILE, 'size:', len(both_score_info_bak))
-# except Exception as e:
-#     print(BOTH_SCORE_INFO_BAK_FILE, 'lost, record again!')
-# exists_obj_id = {}
+
 modified_obj = {}
 
-# BASE_MODEL_PATH = '/home/vmice/projects/sbert-base-chinese-nli'
 BASE_MODEL_PATH = 'models/model_zoo/medium'
-# BASE_MODEL_PATH = 'C:\\Users\\vmice\\.cache\\torch\\sentence_transformers\\uer_sbert-base-chinese-nli'
-# model = SentenceTransformer(BASE_MODEL_PATH)
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -613,6 +536,12 @@ def save_both_score_info_database():
     _save_database(BOTH_SCORE_INFO_BAK_FILE, both_score_info_bak, DEBUG)
 
 def parse_long_text_list(text_list):
+    '''
+    Removes a specific model from the text list
+
+    Args:
+        - text_list: The text list for remove model
+    '''
     WORD_THRESHOLD = 10
     pre_delete_patterns = [r'【\w*】']
     split_patterns = [r'\d+\.', r'\d+、', r'（\d+）', r'\(\d+\)']
@@ -627,11 +556,7 @@ def parse_long_text_list(text_list):
         # print(text)
         for pattern in split_patterns:
             text = re.compile(pattern).sub('$~$', text)
-        # for pattern in post_delete_patterns:
-        #     text = re.compile(pattern).sub('。', text)
-        
-        # for word in texts:
-        #     part_result += [w for w in word.split(split_word[1]) if len(w) > 2]
+            
         part_result = [w for w in text.split('$~$') if len(w) > WORD_THRESHOLD]
         for part_text in part_result:
             for pattern in post_delete_patterns:
@@ -642,9 +567,9 @@ def parse_long_text_list(text_list):
 
 def get_extra_sentence_and_vector(obj_type, obj_id):
     '''
-
     Args:
         - obj_type: The type of main object
+        - obj_id: The id of main object
     '''
     # print(obj_id, type(obj_id), obj_id in main_job_info_bak, len(main_job_info_bak))
     if obj_type == 0:
@@ -655,22 +580,24 @@ def get_extra_sentence_and_vector(obj_type, obj_id):
         return (text, None)
     
 def query_top_k_index(main_vector, equal_vector, k_top=None, k_rate=None):
+    '''
+    Gets the first K index from the special rule
+
+    Args:
+        - main_vector: The vector of main object
+        - equal_vector: The vector of qeual object
+        - k_top: The first K index
+        - k_rate: The first K rate index
+    '''
     if k_rate != None:
         k_top = int(np.ceil(len(main_vector) * k_rate))
     k_top = min(len(main_vector), k_top)
     if not isinstance(main_vector, torch.Tensor): main_vector = torch.tensor(main_vector)
     if not isinstance(equal_vector, torch.Tensor): equal_vector = torch.tensor(equal_vector)
-    # print(vector1.shape, vector2.shape)
+    
     cos_score = util.cos_sim(main_vector, equal_vector).numpy()
     scores = np.max(cos_score, axis=1, keepdims=True).reshape(1, -1)[0]
-    # print(cos_score.shape)
-    # scores = [np.max(cos_score[i, :], keepdims=False) for i in range(cos_score.shape[0])]
-    # print(cos_score)
-    # index = [np.argmax(cos_score[i, :], axis=0) for i in range(cos_score.shape[0])]
-    # print(index)
-    # index = [np.argmax(cos_score[i, :], axis=1) for i in range(cos_score.shape[0])]
-    # print(index)
-    # return np.argmax(cos_score, axis=1)[:min(cos_score.shape[0], k_top)]
+    
     return np.argsort(scores)[-k_top:]
 
 def get_scores_by_type(type_id):
